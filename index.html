@@ -1,0 +1,197 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="Description" content="Put your description here."><base href="/"><style>body,html{margin:0;padding:0;font-family:sans-serif;background-color:#ededed;--r-main-font-size:24px;--r-heading-margin:20px 0 12px 0}.slides{width:75%!important}.container{top:0!important;display:flex!important;flex-direction:row!important}.column{display:flex;flex-direction:column}.row{display:flex;flex-direction:row}ul{width:100%}section{text-align:left}.popover{position:absolute;background-color:#4d4d4d;padding:1rem 2rem;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:10px;width:auto;transform:translate(16px,-15px)}.popover:after{content:"";position:absolute;top:6px;left:-8px;border-style:solid;border-width:18px 12px 0;border-color:#4d4d4d transparent;display:block;width:0;z-index:1;transform:translate(-50%,50%) rotate(90deg)}.popover .hljs-class,.popover .hljs-keyword,.popover .hljs-meta,.popover .hljs-string,.popover .hljs-title{color:#ddd!important;font-weight:400}.reveal pre code{max-height:800px!important}.dna{background-color:green}.zome{background-color:#00f}.coordinator-zomes{background-color:#add8e6}.box,.cell,.conductor,.coordinator-zomes,.dht-shard,.dna,.dna-bundle,.happ,.happ-bundle,.source-chain,.zome{display:flex;align-items:center;justify-content:center;padding:12px;border-width:3px;border-color:#d1d1d1;border-style:solid}</style><link rel="stylesheet" href="holochain-lesson-2/bce6cb85.css"><link rel="stylesheet" href="holochain-lesson-2/5265d60d.css"><link rel="stylesheet" href="holochain-lesson-2/86125abe.css"><title>Holochain Lesson 2</title></head><body><div class="reveal"><div class="slides"><section><h1>HDK: basic functions</h1></section><section><h3>HDK</h3><li class="fragment fade-in-then-semi-out">Holochain Development Kit</li><li class="fragment fade-in-then-semi-out">To create a zome, create a rust crate that depends on the HDK and compile it</li><li class="fragment fade-in-then-semi-out">Allows to define zome functions that can be called from outside the zome</li><li class="fragment fade-in-then-semi-out">Docs at https://docs.rs/hdk</li></section><section><h3>Defining Zome Functions</h3><pre class="fragment fade-in"><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern] <span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comes from hdk::prelude::*</li><li class="fragment fade-in-then-semi-out">Exposes a function to be callable</li><li class="fragment fade-in-then-semi-out">Zome function name must be unique in this zome</li></span><span class="fragment fade-in"> // Exposes a function to be callable from the outside</span>
+fn zome_function_a(<span class="fragment fade-in">name: String</span><span class="fragment fade-in-then-out popover">Zome functions can only accept one parameter</span>) <span class="fragment fade-in">-&gt; ExternResult&lt;String&gt;<span class="fragment fade-in-then-out popover">Must return an "ExternResult&lt;T&gt;"</span></span> {
+  <span class="fragment fade-in">Ok(format!("hello {}!", name))</span>
+}
+</span>
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn zome_function_b(<span class="fragment fade-in">_: ()</span><span class="fragment fade-in-then-out popover">No input parameters</span>) -&gt; ExternResult&lt;String&gt; { <span class="fragment fade-in-then-semi-out">// () denotes no input params </span>
+  Ok(format!("hello world!"))
+}
+</span>
+
+<span class="fragment fade-in-then-semi-out">struct InputStructC {
+  name: String
+}
+<span class="fragment fade-in-then-semi-out">
+#[hdk_extern]
+fn zome_function_c(<span class="fragment fade-in"><span class="fragment fade-in-then-out popover" style="left:300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: InputStructC</span></span>) -&gt; ExternResult&lt;String&gt; { <span class="fragment fade-in">// Doesn't derive "Serialize", "Deserialize" and "Debug"</span>
+  Ok(format!("hello {}!", input.name))
+}
+</span>
+</span>
+
+<span class="fragment fade-in-then-semi-out">#[derive(Serialize, Deserialize, Debug)]
+struct InputStructD {
+  name: String
+}
+<span class="fragment fade-in-then-semi-out">
+#[hdk_extern]
+fn zome_function_d(<span class="fragment fade-in">input: InputStructD</span>) -&gt; ExternResult&lt;String&gt; { <span class="fragment fade-in">// Ok</span>
+  Ok(format!("hello {}!", input.name))
+}
+</span>
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn zome_function_e(_: ()) -&gt; ExternResult&lt;()&gt; { 
+  <span class="fragment fade-in">Err(<span class="fragment fade-in">wasm_error!(WasmErrorInner::Guest(<span class="fragment fade-in-then-out popover">Captures debugging information (eg. line numbers)</span><span class="fragment fade-in">String::from("This function returns an error")</span>))</span>)</span>
+}
+</span>
+</span>
+
+</span></code></pre></section><section><h3>Defining Entries</h3><li class="fragment fade-in-then-semi-out">Only in integrity zomes</li><li class="fragment fade-in-then-semi-out">HDI: Holochain Deterministic integrity<ul><li class="fragment fade-in-then-semi-out">Subset of the HDK to build integrity zomes</li></ul></li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/integrity/lib.rs
+use hdi::prelude::*;
+
+<span class="fragment fade-in"><span class="fragment fade-in">#[hdk_entry_helper]<span class="fragment popover fade-in-then-out">Adds necessary trait implementations</span></span><span class="fragment fade-in"> // Adds necessary trait implementations</span>
+struct Comment {
+  comment: String
+}
+
+<span class="fragment fade-in">#[hdk_entry_helper]
+struct Post {
+  title: String,
+  content: String
+}</span>
+
+
+<span class="fragment fade-in"><span class="fragment fade-in">#[hdk_entry_defs]</span><span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the entries for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_entry_def]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span><span class="fragment fade-in"> // Defines all the entries for the zome</span>
+<span class="fragment fade-in">#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out"></span></span>
+enum EntryTypes { // Enum with each entry type as a variant
+  <span class="fragment fade-in">#[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(<span class="fragment fade-in">name = "comment"</span><span class="fragment fade-in">, visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span></span>)]</span><span class="fragment fade-in"> // Configure entry behaviour</span>
+  Comment(Comment),
+  <span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, defaults to the struct name in snake_case and visibility "public"</span><span class="fragment fade-in">// defaults to name = "post", visibility = "public"</span>
+  Post(Post),
+}
+</span></span>
+</span></code></pre></section><section><h3>Entry Actions</h3><h4 class="fragment fade-in">create_entry()</h4><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+<span class="fade-in">use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome</span>
+
+<span class="fragment fade-in">#[hdk_extern]
+fn create_comment_a(comment: Comment) -&gt; ExternResult&lt;()&gt; {
+  <span class="fragment fade-in">create_entry(<span class="fragment fade-in-then-out popover">Comes from hdk::prelude::*;</span><span class="fragment fade-in">EntryTypes::Comment(comment)</span><span class="fragment popover fade-in-then-out">Input must be an instance of the entry types enum</span>)?;<span class="fragment fade-in"> // Input must be an instance of the entry types enum</span>
+
+  Ok(())</span>
+}</span>
+
+<span class="fragment fade-in">#[hdk_extern]
+fn create_comment_b(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
+  <span class="fragment fade-in"><span class="fragment fade-in">let action_hash = </span><span class="fragment fade-in-then-out popover">Returns the hash of the resulting action that has just been created in the source chain</span>create_entry(EntryTypes::Comment(comment))?; <span class="fragment fade-in-then-semi-out"> // Returns the hash of the resulting action </span>
+
+  <span class="fragment fade-in">Ok(action_hash)</span></span>
+}</span></span>
+  
+          </code></pre></section><section><h3>Entry Actions</h3><h4 class="fragment fade-in">update_entry()</h4><li class="fragment fade-in-then-semi-out">Must be scoped to an action, not an entry<ul><li class="fragment fade-in-then-semi-out">It may be ambiguous which of several valid actions pointing to the same entry you intend to update</li></ul></li><li class="fragment fade-in-then-semi-out">Original entry and action will still exist in the DHT after update</li><li class="fragment fade-in-then-semi-out">One action may be updated multiple times</li><li class="fragment fade-in-then-semi-out">It's up to the application to interpret what "updating an action" means</li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
+
+<span class="fragment fade-in-then-semi-out">
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UpdateCommentInput {
+  original_action_hash: ActionHash,
+  new_comment: Comment
+}</span>
+
+<span class="fragment fade-in-then-semi-out">
+#[hdk_extern]
+fn update_comment(input: UpdateCommentInput) -&gt; ExternResult&lt;ActionHash&gt; {
+  let action_hash = <span class="fragment fade-in-then-semi-out">update_entry(<span class="fragment fade-in">input.original_action_hash</span><span class="fragment popover fade-in-then-out">The original comment action can be a create or an update</span>, <span class="fragment fade-in">input.new_comment</span><span class="fragment popover fade-in-then-out">Entry must be of the same type</span>)?;</span>
+
+  Ok(action_hash)
+}</span></span></code></pre></section><section><h3>Entry Actions</h3><h4 class="fragment fade-in">delete_entry()</h4><li class="fragment fade-in-then-semi-out">Must be scoped to an action, not an entry<ul><li class="fragment fade-in-then-semi-out">It may be ambiguous which of several valid actions pointing to the same entry you intend to delete</li></ul></li><li class="fragment fade-in-then-semi-out">Deleted entry and action will still exist in the DHT after deleting<ul><li class="fragment fade-in-then-semi-out">We are just marking them as "deleted"</li></ul></li><li class="fragment fade-in-then-semi-out">One action may be deleted multiple times</li><li class="fragment fade-in-then-semi-out">It's up to the application to interpret what "deleting an action" means</li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn delete_comment(<span class="fragment fade-in">comment_action_hash: ActionHash</span>) -&gt; ExternResult&lt;()&gt; {<span class="fragment fade-in">
+  <span class="fragment fade-in">let action_hash =<span class="fragment popover fade-in-then-out">Deleting an entry is also its own action</span></span> delete_entry(<span class="fragment fade-in">comment_action_hash</span><span class="fragment popover fade-in-then-out">The original comment action can be a create or an update</span>)?;<span class="fragment fade-in"> // Deleted action hash must be a create or an update action </span>
+
+  <span class="fragment fade-in-then-semi-out">Ok(())</span></span>
+}</span></span></code></pre></section><section><h3>Entry Retrievals</h3><h4 class="fragment fade-in">get()</h4><li class="fragment fade-in-then-semi-out">Given an entry hash or an action hash, return the "Record" that hashes to that hash<ul><li class="fragment fade-in-then-semi-out">Record is the union of the action and optionally its accompanying entry</li></ul></li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
+            
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_comment(<span class="fragment fade-in">comment_action_hash: ActionHash</span>) -&gt; ExternResult&lt;<span class="fragment fade-in">Option&lt;Record&gt;</span>&gt; {<span class="fragment fade-in-then-semi-out">
+  <span class="fragment fade-in">let comment_record: Option&lt;Record&gt; =</span> get(<span class="fragment fade-in">comment_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span></span><span class="fragment fade-in">, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span></span>)?;
+
+  <span class="fragment fade-in">Ok(comment_record)</span></span>
+}</span>
+</span></code></pre></section><section><h3>Entry Retrievals</h3><h4 class="fragment fade-in">get_details()</h4><li class="fragment fade-in-then-semi-out">Given an entry hash, return the entry and all the actions that have created, updated or deleted any action pointing to that entry</li><li class="fragment fade-in-then-semi-out">Given an action hash, return the entry and all the actions that have updated or deleted that action</li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_comment_action_details(<span class="fragment fade-in">comment_action_hash: ActionHash</span>) -&gt; ExternResult&lt;<span class="fragment fade-in">Record</span>&gt; {<span class="fragment fade-in-then-semi-out">
+  <span class="fragment fade-in">let record_details: Option&lt;Details&gt; =</span> get_details(<span class="fragment fade-in">comment_action_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span></span><span class="fragment fade-in">, GetOptions::default()<span class="fragment fade-in-then-out popover">Same options as "get()"</span></span>)?;
+
+  <span class="fragment fade-in">match record_details {
+    <span class="fragment fade-in">Some(Details::Record(RecordDetails { <span class="fragment fade-in">record, deletes, updates, .. </span>}))  =&gt; <span class="fragment fade-in">Ok(record),</span></span>
+    <span class="fragment fade-in">_ =&gt; Err(wasm_error!(WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))))</span>
+  }</span></span>
+}</span>
+  
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_comment_entry_details(<span class="fragment fade-in">comment_entry_hash: EntryHash</span>) -&gt; ExternResult&lt;<span class="fragment fade-in">Entry</span>&gt; {<span class="fragment fade-in-then-semi-out">
+  <span class="fragment fade-in">let entry_details: Option&lt;Details&gt; =</span> get_details(<span class="fragment fade-in">comment_entry_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span></span><span class="fragment fade-in">, GetOptions::default()<span class="fragment fade-in-then-out popover">Same options as "get()"</span></span>)?;
+  
+  <span class="fragment fade-in">match entry_details {
+    <span class="fragment fade-in">Some(Details::Entry(EntryDetails { <span class="fragment fade-in">entry, actions, deletes, updates, ..</span> })) =&gt; <span class="fragment fade-in">Ok(entry),</span></span>
+    <span class="fragment fade-in">_ =&gt; Err(wasm_error!(WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))))</span>
+  }</span></span>
+}</span>
+</span></code></pre></section><section><h3>Links</h3><li class="fragment fade-in-then-semi-out">Linking from one hash to another, with some optional metadata</li><li class="fragment fade-in-then-semi-out">Link components:<ul><li class="fragment fade-in-then-semi-out">Base hash: can be public key, entry hash, action hash or external hash (the hash doesn't exist in this DHT)</li><li class="fragment fade-in-then-semi-out">Target hash: can be of the same types as the base hash</li><li class="fragment fade-in-then-semi-out">Type: app defined link type</li><li class="fragment fade-in-then-semi-out">Tag: app defined arbitrary metadata</li></ul></li><li class="fragment fade-in-then-semi-out">Neither the base nor the target hash need to exist as actions or entries in the DHT</li><li class="fragment fade-in-then-semi-out">Defining link types<ul><li class="fragment fade-in-then-semi-out">Only in integrity zomes</li></ul><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/integrity/lib.rs
+use hdi::prelude::*;
+
+// Defining link types
+<span class="fragment fade-in"><span class="fragment fade-in">#[hdk_link_types]</span><span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the link types for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_link_types]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span><span class="fragment fade-in"> // Defines all the link types for the zome</span>
+enum LinkTypes { // Enum with each entry type as a variant
+  <span class="fragment fade-in"> AuthorToComment,<span class="fragment fade-in-then-out popover">Must be a Unit variant (without any payload)</span> </span>
+}
+</span>
+</span></code></pre></li></section><section><h3>Link Actions</h3><h4 class="fragment fade-in">create_link()</h4><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+<span class="fade-in">use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome</span>
+
+<span class="fragment fade-in">#[hdk_extern]
+fn create_comment(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
+  <span class="fragment fade-in">let comment_action_hash = create_entry(EntryTypes::Comment(comment))?; // Create comment as always</span>
+
+  <span class="fragment fade-in">let my_pub_key: AgentPubKey = agent_info()?.agent_initial_pubkey; <span class="fragment fade-in-then-out popover">The author of the comment is the agent executing this function call</span></span>
+
+  <span class="fragment fade-in"><span class="fragment fade-in">let create_link_action_hash: ActionHash<span class="fragment fade-in-then-out popover">Creating a link is an action in itself</span> = </span>create_link(
+    <span class="fragment fade-in">my_pub_key, <span class="fragment fade-in-then-out popover">Base hash: my agent pub key</span><span class="fragment fade-in">// Base hash</span></span>
+    <span class="fragment fade-in">comment_action_hash,  <span class="fragment fade-in-then-out popover">Target hash: the action hash that has just been created</span><span class="fragment fade-in">// Target hash</span></span>
+    <span class="fragment fade-in">LinkTypes::AuthorToComment,  <span class="fragment fade-in-then-out popover">LinkType: one of the variants defined in the integrity zome</span><span class="fragment fade-in">// Link Type</span></span>
+    <span class="fragment fade-in">()<span class="fragment fade-in-then-out popover">Link tag, can be any struct that derives "Serialized" and "Deserialized"</span><span class="fade-in"> // Link tag</span></span>
+  )?;</span>
+
+  <span class="fragment fade-in">Ok(action_hash)</span>
+}
+</span></span></code></pre></section><section><h3>Link Retrievals</h3><h4 class="fragment fade-in">get_links()</h4><li class="fragment fade-in-then-semi-out">Links are attached to the base hash<ul><li class="fragment fade-in">You can retrieve all the links attached to a given hash as a base</li></ul></li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+<span class="fade-in">use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome</span>
+
+<span class="fragment fade-in">#[hdk_extern]
+fn get_all_comments_by_agent(author: AgentPubKey) -&gt; ExternResult&lt;Vec&lt;Record&gt;&gt; {
+  <span class="fragment fade-in"><span class="fragment fade-in">let links: Vec&lt;Link&gt;</span> = get_links(
+    <span class="fragment fade-in">author, <span class="fragment fade-in-then-out popover">Base hash: the given agent pub key</span><span class="fragment fade-in"> // Base hash </span></span>
+    <span class="fragment fade-in">LinkTypes::AuthorToComment, <span class="fragment fade-in-then-out popover">LinkType: one of the variants defined in the integrity zome</span><span class="fragment fade-in"> // Link Type </span></span>
+    <span class="fragment fade-in">None, <span class="fragment fade-in-then-out popover">"Option&lt;LinkTag&gt;": prefix filter on link tag, if this has some tag starts with the given tag as their prefix will be returned </span><span class="fragment fade-in"> // Filter on link tag prefix </span></span>
+  )?; </span>
+
+  <span class="fragment fade-in">let mut comments: Vec<record> = vec![];</record></span>
+
+  <span class="fragment fade-in">for link in links {
+    <span class="fragment fade-in">let maybe_record = get(<span class="fragment fade-in">ActionHash::from<span class="fragment fade-in-then-out popover">Conversion is important to specify the type of hash we are retrieving for</span>(link.target)<span class="fragment fade-in-then-out popover">Will be the action hash for each of the comments that the agent has created</span></span>, GetOptions::default())?;</span>
+    <span class="fragment fade-in">if let Some(record) = maybe_record {
+      comments.push(record);
+    }</span>
+  }</span>
+
+  <span class="fragment fade-in">Ok(comments)</span>
+}
+</span>
+</span></code></pre></section></div></div><script type="module" src="./holochain-lesson-2/f97af496.js"></script></body></html>
