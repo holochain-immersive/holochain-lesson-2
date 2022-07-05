@@ -276,7 +276,7 @@ struct Post {
 
 
 <span class="fragment fade-in"><span class="fragment fade-in">#[hdk_entry_defs]</span><span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the entries for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_entry_def]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span><span class="fragment fade-in"> // Defines all the entries for the zome</span>
-<span class="fragment fade-in">#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out"><!-- TODO: What this do? --></span></span>
+<span class="fragment fade-in">#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span></span><span class="fragment fade-in"> // Redefines the "EntryTypes" enum but with unit variants</span>
 enum EntryTypes { // Enum with each entry type as a variant
   <span class="fragment fade-in">#[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(<span class="fragment fade-in">name = "comment"</span><span class="fragment fade-in">, visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span></span>)]</span><span class="fragment fade-in"> // Configure entry behaviour</span>
   Comment(Comment),
