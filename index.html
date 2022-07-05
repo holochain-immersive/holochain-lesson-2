@@ -41,6 +41,39 @@ fn zome_function_e(_: ()) -&gt; ExternResult&lt;()&gt; {
 </span>
 </span>
 
+</span></code></pre></section><section><h3>Cell Information</h3><li class="fragment fade-in-then-semi-out">Static information retrieval</li><pre class="fragment fade-in"><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">use hdk::prelude::*;
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_my_pub_key(_: ()) <span class="fragment fade-in">-&gt; ExternResult&lt;AgentPubKey&gt;<span class="fragment fade-in-then-out popover">Acts as the "agent ID"</span></span> {
+  <span class="fragment fade-in">let my_info = agent_info()?;</span><span class="fragment fade-in-then-out popover">Will return a different value depending on which cell is executing the function</span><span class="fragment fade-in"> // Depends on which cell is executing this function</span>
+
+  <span class="fragment fade-in">let my_pub_key: AgentPubKey = my_info.agent_initial_pubkey;<span class="fragment fade-in-then-out popover">"agent_initial_pubkey": In the future the public key of a cell may change </span></span>
+
+  <span class="fragment fade-in">Ok(my_pub_key)</span>
+}</span>
+            
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_zome_name(_: ()) <span class="fragment fade-in">-&gt; ExternResult&lt;ZomeName&gt;<span class="fragment fade-in-then-out popover">A simple struct wrapping a String</span></span> {
+  <span class="fragment fade-in">let info = zome_info()?;</span><span class="fragment fade-in-then-out popover">Will return a different value depending on which zome is the function defined, but will return the same for all agents</span><span class="fragment fade-in"> // Depends on which zome is the function defined</span>
+
+  <span class="fragment fade-in-then-semi-out">let zome_name: ZomeName = info.name;</span><span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span><span class="fragment fade-in"> // Human readable name</span>
+  <span class="fragment fade-in-then-semi-out">let zome_id: ZomeId = info.id;</span><span class="fragment fade-in-then-out popover">Zome index in the DNA that Holochain uses to identify the zome </span><span class="fragment fade-in"> // Zome index (integer)</span>
+
+  <span class="fragment fade-in">Ok(zome_name)</span>
+}</span>
+
+<span class="fragment fade-in-then-semi-out">#[hdk_extern]
+fn get_dna_hash(_: ()) <span class="fragment fade-in">-&gt; ExternResult&lt;DnaHash&gt;</span> {
+  <span class="fragment fade-in">let info = dna_info()?;</span><span class="fragment fade-in-then-out popover">Will return the same value for all agents and zomes in the same DNA</span><span class="fragment fade-in"> // Will return the same value for all agents and zomes in the same DNA</span>
+
+  <span class="fragment fade-in-then-semi-out">let dna_name: String = info.name;</span><span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span><span class="fragment fade-in"> // Human readable name</span>
+  <span class="fragment fade-in-then-semi-out">let hash: DnaHash = info.hash;</span><span class="fragment fade-in-then-out popover">Hash of source code, UID and properties </span><span class="fragment fade-in"> // Hash of source code, UID and properties</span>
+  <span class="fragment fade-in-then-semi-out">let properties = info.properties;</span><span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span><span class="fragment fade-in"> // Properties of the DNA</span>
+  <span class="fragment fade-in-then-semi-out">let admin_pub_key = AgentPubKey::try_from(properties<span class="fragment fade-in-then-out popover">"properties" is of type "SerializedBytes": it can serialize to any rust type that derives "Serialize" and "Deserialize"</span>)?;</span><span class="fragment fade-in"> // Decoding the properties</span>
+
+
+  <span class="fragment fade-in">Ok(hash)</span>
+}</span>
 </span></code></pre></section><section><h3>Defining Entries</h3><li class="fragment fade-in-then-semi-out">Only in integrity zomes</li><li class="fragment fade-in-then-semi-out">HDI: Holochain Deterministic integrity<ul><li class="fragment fade-in-then-semi-out">Subset of the HDK to build integrity zomes</li></ul></li><pre><code class="rust" data-noescape=""><span class="fragment fade-in-then-semi-out">// zomes/integrity/lib.rs
 use hdi::prelude::*;
 
@@ -57,7 +90,7 @@ struct Post {
 
 
 <span class="fragment fade-in"><span class="fragment fade-in">#[hdk_entry_defs]</span><span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the entries for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_entry_def]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span><span class="fragment fade-in"> // Defines all the entries for the zome</span>
-<span class="fragment fade-in">#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out"></span></span>
+<span class="fragment fade-in">#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span></span><span class="fragment fade-in"> // Redefines the "EntryTypes" enum but with unit variants</span>
 enum EntryTypes { // Enum with each entry type as a variant
   <span class="fragment fade-in">#[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(<span class="fragment fade-in">name = "comment"</span><span class="fragment fade-in">, visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span></span>)]</span><span class="fragment fade-in"> // Configure entry behaviour</span>
   Comment(Comment),
