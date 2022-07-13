@@ -1,4 +1,146 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="Description" content="Put your description here."><base href="/"><style>body,html{margin:0;padding:0;font-family:sans-serif;background-color:#ededed;--r-main-font-size:24px;--r-heading-margin:20px 0 12px 0}.slides{width:75%!important}.container{top:0!important;display:flex!important;flex-direction:row!important}.column{display:flex;flex-direction:column}.row{display:flex;flex-direction:row}ul{width:100%}section{text-align:left}.popover{position:absolute;background-color:#4d4d4d;padding:1rem 2rem;box-shadow:0 2px 5px 0 rgba(0,0,0,.26);border-radius:10px;width:auto;transform:translate(16px,-15px)}.popover:after{content:"";position:absolute;top:6px;left:-8px;border-style:solid;border-width:18px 12px 0;border-color:#4d4d4d transparent;display:block;width:0;z-index:1;transform:translate(-50%,50%) rotate(90deg)}.popover .hljs-class,.popover .hljs-keyword,.popover .hljs-meta,.popover .hljs-string,.popover .hljs-symbol,.popover .hljs-title{color:#ddd!important;font-weight:400}.reveal pre code{max-height:800px!important}.dna{background-color:green}.zome{background-color:#00f}.coordinator-zomes{background-color:#add8e6}.box,.cell,.conductor,.coordinator-zomes,.dht-shard,.dna,.dna-bundle,.happ,.happ-bundle,.source-chain,.zome{display:flex;align-items:center;justify-content:center;padding:12px;border-width:3px;border-color:#d1d1d1;border-style:solid}</style><link rel="stylesheet" href="holochain-lesson-2/bce6cb85.css"><link rel="stylesheet" href="holochain-lesson-2/5265d60d.css"><link rel="stylesheet" href="holochain-lesson-2/86125abe.css"><title>Holochain Lesson 2</title></head><body><div class="reveal"><div class="slides"><section><h1>HDK: basic functions</h1></section><section language="markdown" animate="by-line with-ancestry">### HDK &amp; HDI - Holochain Development Kit (HDK) - To create a coordinator zome, create a rust crate that depends on the HDK and compile it - Allows to define zome functions that can be called from outside the zome - Docs at https://docs.rs/hdk - Holochain Deterministic Integrity (HDI) - Subset of the HDK to build integrity zomes - Only types that deal with validation rules and entry definitions - Docs at https://docs.rs/hdi</section><section><h3>Defining Zome Functions</h3><fragment animate="balanced separate-comments by-line with-ancestry"><pre class="fragment fade-in"><code class="rust" data-noescape="">
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="Description" content="Put your description here.">
+    <base href="/">
+
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background-color: #ededed;
+        --r-main-font-size: 24px;
+        --r-heading-margin: 20px 0 12px 0;
+      }
+
+      .slides {
+        width: 75% !important;
+      }
+
+      .container {
+        top: 0 !important;
+        display: flex !important;
+        flex-direction: row !important;
+      }
+      .column {
+        display: flex;
+        flex-direction: column;
+      }
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+
+      ul {
+        width: 100%;
+      }
+
+      section {
+        text-align: left;
+      }
+
+      .popover {
+        position: absolute;
+        background-color: #4d4d4d;
+        padding: 1rem 2rem;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+        border-radius: 10px;
+        width: auto;
+        transform: translate(16px, -15px);
+      }
+      .popover:after {
+        content: "";
+        position: absolute;
+        top: 6px;
+        left: -8px;
+        border-style: solid;
+        border-width: 18px 12px 0;
+        border-color: #4d4d4d transparent;
+        display: block;
+        width: 0;
+        z-index: 1;
+        transform: translate(-50%, 50%) rotate(90deg);
+      }
+
+      .popover .hljs-meta,
+      .popover .hljs-class,
+      .popover .hljs-keyword,
+      .popover .hljs-symbol,
+      .popover .hljs-string,
+      .popover .hljs-title {
+        color: rgb(221, 221, 221) !important;
+        font-weight: normal;
+      }
+
+      .reveal pre code {
+        max-height: 800px !important;
+      }
+
+      .dna {
+        background-color: green;
+      }
+      .zome {
+        background-color: blue;
+      }
+      .coordinator-zomes {
+        background-color: lightblue;
+      }
+
+      .dna,
+      .cell,
+      .zome,
+      .coordinator-zomes,
+      .source-chain,
+      .happ-bundle,
+      .box,
+      .dna-bundle,
+      .dht-shard,
+      .conductor,
+      .happ {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border-width: 3px;
+        border-color: rgb(209, 209, 209);
+        border-style: solid;
+      }
+    </style>
+    <link rel="stylesheet" href="holochain-lesson-2/bce6cb85.css">
+
+    <link rel="stylesheet" href="holochain-lesson-2/5265d60d.css">
+    <link rel="stylesheet" href="holochain-lesson-2/86125abe.css">
+    <title>Holochain Lesson 2</title>
+  </head>
+
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>HDK: basic functions</h1>
+        </section>
+
+        <section language="markdown" animate="by-line with-ancestry">
+          ### HDK &amp; HDI
+
+          - Holochain Development Kit (HDK)
+            - To create a coordinator zome, create a rust crate that depends on the HDK and compile it
+            - Allows to define zome functions that can be called from outside the
+              zome
+            - Docs at https://docs.rs/hdk
+          - Holochain Deterministic Integrity (HDI)
+            - Subset of the HDK to build integrity zomes
+            - Only types that deal with validation rules and entry definitions
+            - Docs at https://docs.rs/hdi
+        </section>
+
+        <section>
+          <h3>Defining Zome Functions</h3>
+
+          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
 
 #[hdk_extern] <span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comes from hdk::prelude::*</li><li class="fragment fade-in-then-semi-out">Exposes a function to be callable</li><li class="fragment fade-in-then-semi-out">Zome function name must be unique in this zome</li></span> // Exposes a function to be callable from the outside
@@ -16,7 +158,7 @@ struct InputStructC {
 }
 
 #[hdk_extern]
-fn zome_function_c(<span class="fragment fade-in-then-out popover" style="left:300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: InputStructC</span>) -&gt; ExternResult&lt;String&gt; { // Doesn't derive "Serialize", "Deserialize" and "Debug"
+fn zome_function_c(<span class="fragment fade-in-then-out popover" style="left: 300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: InputStructC</span>) -&gt; ExternResult&lt;String&gt; { // Doesn't derive "Serialize", "Deserialize" and "Debug"
   Ok(format!("hello {}!", input.name))
 }
 
@@ -34,7 +176,19 @@ fn zome_function_d(input: InputStructD) -&gt; ExternResult&lt;String&gt; { // Ok
 fn zome_function_e(_: ()) -&gt; ExternResult&lt;()&gt; { 
   Err(wasm_error!(WasmErrorInner::Guest(<span class="fragment fade-in-then-out popover">Captures debugging information (eg. line numbers)</span>String::from("This function returns an error")))) // Captures debug info
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Cell Information - Static information retrieval</fragment><fragment animate="balanced separate-comments by-line with-ancestry"><pre class="fragment fade-in"><code class="rust" data-noescape="">
+</code></pre>
+</fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+           ### Cell Information
+
+           - Static information retrieval
+          </fragment>
+
+          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
 
 #[hdk_extern]
@@ -67,7 +221,20 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
 
   Ok(hash)
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Defining Entries - Only in integrity zomes</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
+</code></pre>
+</fragment>
+</section>
+
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Defining Entries
+
+            - Only in integrity zomes
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
 use hdi::prelude::*;
 
 #[hdk_entry_helper]<span class="fragment popover fade-in-then-out">Adds necessary trait implementations</span> // Adds necessary trait implementations
@@ -89,7 +256,17 @@ enum EntryTypes { // Enum with each entry type as a variant
   <span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "post", visibility = "public"
   Post(Post),
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Entry Actions #### create_entry()</fragment><pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
+</code></pre>
+</fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
+            #### create_entry()
+          </fragment>
+
+          <pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
@@ -107,7 +284,23 @@ fn create_comment_b(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
   Ok(action_hash)
 }
   
-          </code></pre></section><section><fragment language="markdown" animate="by-line with-ancestry">### Entry Actions #### update_entry() - Must be scoped to an action, not an entry - It may be ambiguous which of several valid actions pointing to the same entry you intend to update - Original entry and action will still exist in the DHT after update - One action may be updated multiple times - It's up to the application to interpret what "updating an action" means</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">
+          </code></pre>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
+            #### update_entry()
+
+            - Must be scoped to an action, not an entry
+              - It may be ambiguous which of several valid actions pointing to the same entry you intend to update
+            - Original entry and action will still exist in the DHT after update
+            - One action may be updated multiple times
+            - It's up to the application to interpret what "updating an action" means
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -124,7 +317,25 @@ fn update_comment(input: UpdateCommentInput) -&gt; ExternResult&lt;ActionHash&gt
 
   Ok(action_hash)
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Entry Actions #### delete_entry() - Must be scoped to an action, not an entry - It may be ambiguous which of several valid actions pointing to the same entry you intend to delete - Deleted entry and action will still exist in the DHT after deleting - We are just marking them as "deleted" - One action may be deleted multiple times - It's up to the application to interpret what "deleting an action" means</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
+            #### delete_entry()
+
+            - Must be scoped to an action, not an entry
+                - It may be ambiguous which of several valid actions pointing to the same entry you intend to delete
+            - Deleted entry and action will still exist in the DHT after deleting
+                - We are just marking them as "deleted"
+            - One action may be deleted multiple times
+            - It's up to the application to interpret what "deleting an action" means
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -135,7 +346,21 @@ fn delete_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;()&gt; 
 
   Ok(())
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Entry Retrievals #### get() - Given an entry hash or an action hash, return the "Record" that hashes to that hash - Record is the union of the action and optionally its accompanying entry</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Retrievals
+            #### get()
+
+            - Given an entry hash or an action hash, return the "Record" that hashes to that hash
+              - Record is the union of the action and optionally its accompanying entry
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
             
@@ -145,7 +370,21 @@ fn get_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;Option&lt;
 
   Ok(comment_record)
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Entry Retrievals #### get_details() - Given an entry hash, return the entry and all the actions that havecreated, updated or deleted any action pointing to that entry - Given an action hash, return the entry and all the actions that have updated or deleted that action</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Retrievals
+            #### get_details()
+
+            - Given an entry hash, return the entry and all the actions that havecreated, updated or deleted any action pointing to that entry
+            - Given an action hash, return the entry and all the actions that have updated or deleted that action
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -169,7 +408,28 @@ fn get_comment_entry_details(comment_entry_hash: EntryHash) -&gt; ExternResult&l
     _ =&gt; Err(wasm_error!(WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))))
   }
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Links - Linking from one hash to another, with some optional metadata - Link components: - Base hash: can be public key, entry hash, action hash or external hash (the hash doesn't exist in this DHT) - Target hash: can be of the same types as the base hash - Type: app defined link type - Tag: app defined arbitrary metadata - Neither the base nor the target hash need to exist as actions or entries in the DHT - Defining link types - Only in integrity zomes</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Links
+
+            - Linking from one hash to another, with some optional metadata
+            - Link components:
+              - Base hash: can be public key, entry hash, action hash or
+                external hash (the hash doesn't exist in this DHT)
+              - Target hash: can be of the same types as the base hash
+              - Type: app defined link type
+              - Tag: app defined arbitrary metadata
+            - Neither the base nor the target hash need to exist as actions or entries in the DHT
+            - Defining link types
+              - Only in integrity zomes
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+            <pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
 use hdi::prelude::*;
 
 // Defining link types
@@ -177,7 +437,18 @@ use hdi::prelude::*;
 enum LinkTypes { // Enum with each entry type as a variant
    AuthorToComment,<span class="fragment fade-in-then-out popover">Must be a Unit variant (without any payload) </span>
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Link Actions #### create_link()</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Link Actions
+            #### create_link()
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -197,7 +468,22 @@ fn create_comment(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
 
   Ok(action_hash)
 }
-</code></pre></fragment></section><section><fragment language="markdown" animate="by-line with-ancestry">### Link Retrievals #### get_links() - Links are attached to the base hash - You can retrieve all the links attached to a given hash as a base</fragment><fragment animate="by-line with-ancestry balanced separate-comments"><pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Link Retrievals
+            #### get_links()
+
+            - Links are attached to the base hash
+              - You can retrieve all the links attached to a given hash as a base
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+
+          <pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome
 
@@ -220,4 +506,13 @@ fn get_all_comments_by_agent(author: AgentPubKey) -&gt; ExternResult&lt;Vec&lt;R
 
   Ok(comments)
 }
-</code></pre></fragment></section></div></div><script type="module" src="./holochain-lesson-2/7dd59e53.js"></script></body></html>
+</code></pre>
+          </fragment>
+        </section>
+      </div>
+    </div>
+
+    
+  
+
+<script type="module" src="./holochain-lesson-2/7dd59e53.js"></script></body></html>
