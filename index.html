@@ -134,14 +134,17 @@
         </section>
 
         <section language="markdown" animate="by-line with-ancestry">
-          ### HDK
+          ### HDK & HDI
 
-          - Holochain Development Kit
-          - To create a zome, create a rust crate that depends on the HDK and
-            compile it
-          - Allows to define zome functions that can be called from outside the
-            zome
-          - Docs at https://docs.rs/hdk
+          - Holochain Development Kit (HDK)
+            - To create a coordinator zome, create a rust crate that depends on the HDK and compile it
+            - Allows to define zome functions that can be called from outside the
+              zome
+            - Docs at https://docs.rs/hdk
+          - Holochain Deterministic Integrity (HDI)
+            - Subset of the HDK to build integrity zomes
+            - Only types that deal with validation rules and entry definitions
+            - Docs at https://docs.rs/hdi
         </section>
 
         <section>
@@ -191,12 +194,13 @@ fn zome_function_e(_: ()) -> ExternResult&lt;()&gt; {
         </section>
 
         <section>
-          <h3>Cell Information</h3>
+          <fragment language="markdown" animate="by-line with-ancestry">
+           ### Cell Information
 
-          <li class="fragment fade-in-then-semi-out">Static information retrieval</li>
+           - Static information retrieval
+          </fragment>
 
           <fragment animate="balanced separate-comments by-line with-ancestry">
-
           <pre
             class="fragment fade-in"
           ><code class="rust" data-noescape>
@@ -239,11 +243,9 @@ fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
 
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
-          ### Defining Entries
+            ### Defining Entries
 
-          - Only in integrity zomes
-          - HDI: Holochain Deterministic integrity
-            - Subset of the HDK to build integrity zomes
+            - Only in integrity zomes
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -274,8 +276,10 @@ enum EntryTypes { // Enum with each entry type as a variant
         </section>
 
         <section>
-          <h3>Entry Actions</h3>
-          <h4 class="fragment fade-in">create_entry()</h4>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
+            #### create_entry()
+          </fragment>
 
           <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
 use hdk::prelude::*;
@@ -449,7 +453,6 @@ enum LinkTypes { // Enum with each entry type as a variant
    AuthorToComment,<span class="fragment fade-in-then-out popover">Must be a Unit variant (without any payload) </span>
 }
 </code></pre>
-          </li>
           </fragment>
         </section>
 
