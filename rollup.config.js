@@ -17,7 +17,6 @@ export default {
   plugins: [
     /** Enable using HTML as rollup entrypoint */
     html({
-      minify: true,
       publicPath: "holochain-lesson-2",
     }),
     /** Resolve bare module imports */
@@ -42,23 +41,7 @@ export default {
           },
         ],
       ],
-      plugins: [
-        [
-          require.resolve("babel-plugin-template-html-minifier"),
-          {
-            modules: { lit: ["html", { name: "css", encapsulation: "style" }] },
-            failOnError: false,
-            strictCSS: true,
-            htmlMinifier: {
-              collapseWhitespace: true,
-              conservativeCollapse: true,
-              removeComments: true,
-              caseSensitive: true,
-              minifyCSS: true,
-            },
-          },
-        ],
-      ],
+      plugins: [],
     }),
   ],
 };
