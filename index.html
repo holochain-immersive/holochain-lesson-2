@@ -281,6 +281,8 @@ enum EntryTypes { // Enum with each entry type as a variant
             #### create_entry()
           </fragment>
 
+          <fragment animate="by-line with-ancestry balanced">
+
           <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -294,12 +296,13 @@ fn create_comment_a(comment: Comment) -> ExternResult&lt;()&gt; {
 
 #[hdk_extern]
 fn create_comment_b(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
-  let action_hash = <span class="fragment fade-in-then-out popover">Returns the hash of the resulting action that has just been created in the source chain</span>create_entry(EntryTypes::Comment(comment))?;  // Returns the hash of the resulting action 
+  let action_hash = <span class="fragment fade-in-then-out popover">Returns the hash of the resulting action that has just been created in the source chain</span>create_entry(EntryTypes::Comment(comment))?; // Returns the hash of the resulting action 
 
   Ok(action_hash)
 }
   
           </code></pre>
+          </fragment>
         </section>
 
         <section >
