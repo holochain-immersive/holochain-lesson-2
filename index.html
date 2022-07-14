@@ -239,7 +239,7 @@ fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
   let info = dna_info()?;<span class="fragment fade-in-then-out popover">Will return the same value for all agents and zomes in the same DNA</span> // Will return the same value for all agents and zomes in the same DNA
 
   let dna_name: String = info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
-  let hash: DnaHash = info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, UID and properties </span> // Hash of source code, UID and properties
+  let hash: DnaHash = info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, Network Seed and properties </span> // Hash of source code, UID and properties
   let properties = info.properties;<span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span> // Properties of the DNA
   let admin_pub_key = AgentPubKey::try_from(properties<span class="fragment fade-in-then-out popover">'properties' is of type 'SerializedBytes', it can serialize to any rust type that derives 'Serialize' and 'Deserialize'</span>)?; // Decoding the properties
 
