@@ -224,7 +224,7 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
   let info = dna_info()?;<span class="fragment fade-in-then-out popover">Will return the same value for all agents and zomes in the same DNA</span> // Will return the same value for all agents and zomes in the same DNA
 
   let dna_name: String = info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
-  let hash: DnaHash = info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, UID and properties </span> // Hash of source code, UID and properties
+  let hash: DnaHash = info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, Network Seed and properties </span> // Hash of source code, UID and properties
   let properties = info.properties;<span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span> // Properties of the DNA
   let admin_pub_key = AgentPubKey::try_from(properties<span class="fragment fade-in-then-out popover">'properties' is of type 'SerializedBytes', it can serialize to any rust type that derives 'Serialize' and 'Deserialize'</span>)?; // Decoding the properties
 
@@ -378,7 +378,7 @@ use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our in
             
 #[hdk_extern]
 fn get_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;Option&lt;Record&gt;&gt; {
-  let comment_record: Option&lt;Record&gt; = get(comment_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span>)?;
+  let comment_record: Option&lt;Record&gt; = get(comment_action_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span>)?;
 
   Ok(comment_record)
 }
@@ -391,8 +391,8 @@ fn get_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;Option&lt;
             ### Entry Retrievals
             #### get_details()
 
-            - Given an entry hash, return the entry and all the actions that havecreated, updated or deleted any action pointing to that entry
-            - Given an action hash, return the entry and all the actions that have updated or deleted that action
+            - Given an entry hash, return the entry and all the actions that have created, updated or deleted any action pointing to that entry
+            - Given an action hash, return the entry, the action and all the actions that have updated or deleted that action
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -478,7 +478,7 @@ fn create_comment(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
     ()<span class="fragment fade-in-then-out popover">Link tag, can be any struct that derives 'Serialized' and 'Deserialized'</span> // Link tag
   )?;
 
-  Ok(action_hash)
+  Ok(comment_action_hash)
 }
 </code></pre>
           </fragment>
