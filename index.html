@@ -393,7 +393,7 @@ use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our in
             
 #[hdk_extern]
 fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Record&gt;&gt; {
-  let comment_record: Option&lt;Record&gt; = get(comment_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span>)?;
+  let comment_record: Option&lt;Record&gt; = get(comment_action_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span>)?;
 
   Ok(comment_record)
 }
@@ -406,8 +406,8 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
             ### Entry Retrievals
             #### get_details()
 
-            - Given an entry hash, return the entry and all the actions that havecreated, updated or deleted any action pointing to that entry
-            - Given an action hash, return the entry and all the actions that have updated or deleted that action
+            - Given an entry hash, return the entry and all the actions that have created, updated or deleted any action pointing to that entry
+            - Given an action hash, return the entry, the action and all the actions that have updated or deleted that action
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -493,7 +493,7 @@ fn create_comment(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
     ()<span class="fragment fade-in-then-out popover">Link tag, can be any struct that derives 'Serialized' and 'Deserialized'</span> // Link tag
   )?;
 
-  Ok(action_hash)
+  Ok(comment_action_hash)
 }
 </code></pre>
           </fragment>
