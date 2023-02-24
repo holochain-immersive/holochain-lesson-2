@@ -157,42 +157,76 @@
         </section>
 
         <section>
-          <h3>Defining Zome Functions</h3>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Defining Zome Functions: Exposure
+          </fragment>
 
           <fragment animate="balanced separate-comments by-line with-ancestry">
-          <pre
-            class="fragment fade-in"
-          ><code class="rust" data-noescape>
+            <pre
+              class="fragment fade-in"
+            ><code class="rust" data-noescape>
 use hdk::prelude::*;
 
 #[hdk_extern] <span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comes from hdk::prelude::*</li><li class="fragment fade-in-then-semi-out">Exposes a function to be callable</li><li class="fragment fade-in-then-semi-out">Zome function name must be unique in this zome</li></span> // Exposes a function to be callable from the outside
-fn zome_function_a(name: String<span class="fragment fade-in-then-out popover">Zome functions can only accept one parameter</span>) -> ExternResult&lt;String&gt;<span class="fragment fade-in-then-out popover">Must return an "ExternResult&lt;T&gt;"</span> {
+fn zome_function_hello(name: String<span class="fragment fade-in-then-out popover">Zome functions can only accept one parameter</span>) -> ExternResult&lt;String&gt;<span class="fragment fade-in-then-out popover">Must return an "ExternResult&lt;T&gt;"</span> {
   Ok(format!("hello {}!", name))
 }
 
 #[hdk_extern]
-fn zome_function_b(_: ()<span class="fragment fade-in-then-out popover">No input parameters</span>) -> ExternResult&lt;String&gt; { // () denotes no input params
+fn zome_function_hello_world(_: ()<span class="fragment fade-in-then-out popover">To indicate disregard for input parameter, we use the Unit type</span>) -> ExternResult&lt;String&gt; { // () denotes no input params
   Ok(format!("hello world!"))
 }
+</code
+            ></pre>
+          </fragment>
+        </section>
 
-struct InputStructC {
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+           ### Defining Zome Functions: Custom Inputs
+          </fragment>
+
+          <fragment animate="balanced separate-comments by-line with-ancestry">
+            <pre
+              class="fragment fade-in"
+            ><code class="rust" data-noescape>
+use hdk::prelude::*;
+
+// We can define custom input parameter structs
+#[derive(Serialize, Deserialize, Debug)]<span class="fragment fade-in-then-out popover" style="left: 300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>
+struct CustomInputStruct {
   name: String
 }
 
 #[hdk_extern]
-fn zome_function_c(<span class="fragment fade-in-then-out popover" style="left: 300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: InputStructC</span>) -> ExternResult&lt;String&gt; { // Doesn't derive "Serialize", "Deserialize" and "Debug"
+fn zome_function_with_custom_input(input: CustomInputStruct) -> ExternResult&lt;String&gt; { // Ok
   Ok(format!("hello {}!", input.name))
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-struct InputStructD {
+struct BrokenInputStruct {<span class="fragment fade-in-then-out popover" style="left: 300px">This input struct wont work, because it doesn't derive the right traits</span>
   name: String
 }
 
 #[hdk_extern]
-fn zome_function_d(input: InputStructD) -> ExternResult&lt;String&gt; { // Ok
+fn zome_function_with_broken_custom_input(<span class="fragment fade-in-then-out popover" style="left: 525px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: BrokenInputStruct</span>) -> ExternResult&lt;String&gt; {
+  // Err! Doesn't derive "Serialize", "Deserialize" and "Debug"
   Ok(format!("hello {}!", input.name))
 }
+</code
+            ></pre>
+          </fragment>
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+           ### Defining Zome Functions: Capturing Debugging Data
+          </fragment>
+
+          <fragment animate="balanced separate-comments by-line with-ancestry">
+            <pre
+              class="fragment fade-in"
+            ><code class="rust" data-noescape>
+use hdk::prelude::*;
 
 #[hdk_extern]
 fn zome_function_e(_: ()) -> ExternResult&lt;()&gt; { 
