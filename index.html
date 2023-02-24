@@ -193,7 +193,7 @@ fn zome_function_hello_world(_: ()<span class="fragment fade-in-then-out popover
 use hdk::prelude::*;
 
 // We can define custom input parameter structs
-#[derive(Serialize, Deserialize, Debug)]<span class="fragment fade-in-then-out popover" style="left: 300px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>
+#[derive(Serialize, Deserialize, Debug)]<span class="fragment fade-in-then-out popover">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>
 struct CustomInputStruct {
   name: String
 }
@@ -203,12 +203,12 @@ fn zome_function_with_custom_input(input: CustomInputStruct) -> ExternResult&lt;
   Ok(format!("hello {}!", input.name))
 }
 
-struct BrokenInputStruct {<span class="fragment fade-in-then-out popover" style="left: 300px">This input struct wont work, because it doesn't derive the right traits</span>
+struct BrokenInputStruct {<span class="fragment fade-in-then-out popover">This input struct wont work, because it doesn't derive the right traits</span>
   name: String
 }
 
 #[hdk_extern]
-fn zome_function_with_broken_custom_input(<span class="fragment fade-in-then-out popover" style="left: 525px">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span><span class="fragment strike">input: BrokenInputStruct</span>) -> ExternResult&lt;String&gt; {
+fn zome_function_with_broken_custom_input(<span class="fragment strike">input: BrokenInputStruct</span><span class="fragment fade-in-then-out popover">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>) -> ExternResult&lt;String&gt; {
   // Err! Doesn't derive "Serialize", "Deserialize" and "Debug"
   Ok(format!("hello {}!", input.name))
 }
