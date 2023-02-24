@@ -260,7 +260,7 @@ fn get_my_pub_key(_: ()) -> ExternResult&lt;AgentPubKey&gt;<span class="fragment
             
 #[hdk_extern]
 fn get_zome_name(_: ()) -> ExternResult&lt;ZomeName&gt;<span class="fragment fade-in-then-out popover">A simple struct wrapping a String</span> {
-  let info = zome_info()?;<span class="fragment fade-in-then-out popover">Will return a different value depending on which zome is the function defined, but will return the same for all agents</span> // Depends on which zome is the function defined
+  let info = zome_info()?;<span class="fragment fade-in-then-out popover">Will return a different value depending on which zome this function is defined within, <br/>but will return the same for all agents</span> // Depends on which zome is the function defined
 
   let zome_name: ZomeName = info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
   let zome_id: ZomeId = info.id;<span class="fragment fade-in-then-out popover">Zome index in the DNA that Holochain uses to identify the zome </span> // Zome index (integer)
