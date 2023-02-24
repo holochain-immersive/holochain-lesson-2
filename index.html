@@ -251,7 +251,7 @@ use hdk::prelude::*;
 fn get_my_pub_key(_: ()) -> ExternResult&lt;AgentPubKey&gt;<span class="fragment fade-in-then-out popover">Acts as the "agent ID"</span> {
   let my_agent_info = agent_info()?;<span class="fragment fade-in-then-out popover">Will return a different value depending on which cell is executing the function</span> // Depends on which cell is executing this function
 
-  let my_pub_key: AgentPubKey = my_agent_info.agent_initial_pubkey;<span class="fragment fade-in-then-out popover">"agent_initial_pubkey": In the future the public key of a cell may change </span>
+  let my_pub_key: AgentPubKey = my_agent_info.agent_initial_pubkey;<span class="fragment fade-in-then-out popover">"agent_initial_pubkey": In the future the public <br/>key of a cell may change </span>
 
   Ok(my_pub_key)
 }
@@ -284,9 +284,10 @@ fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
 
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
-            ### Defining Entries
+            ### Defining An Entry Format
 
-            - Only in integrity zomes
+            - Defines the format for a particular type of entry
+            - Can only be done in an integrity zome
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -305,11 +306,10 @@ struct Post {
 }
 
 #[hdk_entry_defs]<span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the entries for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_entry_def]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span> // Defines all the entries for the zome
-#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span> // Redefines the "EntryTypes" enum but with unit variants
+#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted <br/>variants to unit variants (no payload)  </span> // Redefines the "EntryTypes" enum but with unit variants
 enum EntryTypes { // Enum with each entry type as a variant
   #[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(name = "comment", visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span>)] // Configure entry behaviour
-  Comment(Comment),
-  <span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "post", visibility = "public"
+  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "post", visibility = "public"
   Post(Post),
 }
 </code></pre>
@@ -320,6 +320,7 @@ enum EntryTypes { // Enum with each entry type as a variant
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### create_entry()
+            - Includes the instructions for creating a new entry of a given type
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced">
