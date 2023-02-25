@@ -320,30 +320,43 @@ enum EntryTypes { // Enum with each entry type as a variant
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### create_entry()
-            - Includes the instructions for creating a new entry of a given type
+            - Issues a notice to the DHT to record the creation of a new entry node for some given type
+            - Records both the details of the entry itself, and a create action, describing a claim to having "created" that entry
+            - A create action branches directly from an entry itself
+            - If the entry already exists in the DHT, then only the create action is added (since there can be no duplicates in a content-addressed DHT)
+              - There can be any number of create actions added to the DHT, all claiming to have created the same entry
+              - The create actions may contradict one another (by claiming different original authors of the entry, for example)
+              - It's up to the application code to interpret the full set of discoverable actions, and determine a single, well-believed world state
           </fragment>
 
-          <fragment animate="by-line with-ancestry balanced">
+        </section>
 
-          <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
+            #### create_entry()
+          </fragment>
+
+          <fragment animate="by-line with-ancestry balanced separate-comments">
+            <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[hdk_extern]
-fn create_comment_a(comment: Comment) -> ExternResult&lt;()&gt; {
-  create_entry(<span class="fragment fade-in-then-out popover">Comes from hdk::prelude::*;</span>EntryTypes::Comment(comment)<span class="fragment popover fade-in-then-out">Input must be an instance of the entry types enum</span>)?; // Input must be an instance of the entry types enum
+fn basic_comment_creation(comment: Comment) -> ExternResult&lt;()&gt; {
+  create_entry(<span class="fragment fade-in-then-out popover">Comes from hdk::prelude::*;</span>EntryTypes::Comment(comment)<span class="fragment fade-in-then-out popover">Input must be an instance of the entry types enumerable</span>)?; // Input must be an instance of the entry types enum
 
   Ok(())
 }
 
 #[hdk_extern]
-fn create_comment_b(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
-  let action_hash = <span class="fragment fade-in-then-out popover">Returns the hash of the resulting action that has just been created in the source chain</span>create_entry(EntryTypes::Comment(comment))?; // Returns the hash of the resulting action 
+fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
+  let action_hash = create_entry(EntryTypes::Comment(comment))?;<span class="fragment fade-in-then-out popover">create_entry() returns the hash of the action that <br/> has just been inserted into the agent's source chain</span> // Returns the hash of the resulting action
 
   Ok(action_hash)
 }
-  
-          </code></pre>
+</code
+            ></pre>
           </fragment>
         </section>
 
@@ -352,15 +365,21 @@ fn create_comment_b(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
             ### Entry Actions
             #### update_entry()
 
-            - Must be scoped to an action, not an entry
-              - It may be ambiguous which of several valid actions pointing to the same entry you intend to update
-            - Original entry and action will still exist in the DHT after update
-            - One action may be updated multiple times
-            - It's up to the application to interpret what "updating an action" means
+            - Records a modification submitted on an entry, downstream of that entry's initial create action
+            - An update action must be issued as a child of some other action
+              - The new update action can be the child of either a create action, or of another pre-existing update action
+            - After adding an update, The original entry (as well as all of that entry's valid downstream create and update actions) will still exist in the DHT
+            - One create or update action may have any number of child update actions added under it
+              - In this way, a set of update actions can form a merkle chain of compatible updates to one entry
+              - Furthermore, a set of update actions might branch to form a tree of incompatible update chains
+              - It's up to the application code to interpret the full set of discoverable actions, and determine a single well-believed world state
+            - An update action cannot branch directly from an entry itself
+              - This is because, for any given entry, there may be several valid create and update actions all descended from that one entry
+              - Attempting to attach an update directly to an entry would require deciding which of the valid action chains you wanted to append the new update action to
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
-          <pre><code class="rust" data-noescape>
+            <pre><code class="rust" data-noescape>
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -377,7 +396,8 @@ fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
 
   Ok(action_hash)
 }
-</code></pre>
+</code
+            ></pre>
           </fragment>
         </section>
 
