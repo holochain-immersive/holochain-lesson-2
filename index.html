@@ -319,13 +319,24 @@ enum EntryTypes { // Enum with each entry type as a variant
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
+            #### Overview
+            - These are actions you can take on your Holochain app's state machine, stored in the app's DHT 
+            - Includes actions like create, update, delete
+            - Can be done in an integrity zome or in a coordinator zome
+          </fragment>
+
+        </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Actions
             #### create_entry()
             - Issues a notice to the DHT to record the creation of a new entry node for some given type
-            - Records both the details of the entry itself, and a create action, describing a claim to having "created" that entry
-            - A create action branches directly from an entry itself
-            - If the entry already exists in the DHT, then only the create action is added (since there can be no duplicates in a content-addressed DHT)
+            - Records both the details of the entry itself, and a create action, which describes a claim to having "created" that entry
+            - In the merkle tree, a create action branches directly from an entry itself
+            - If the submitted entry already can already be found in the DHT, then only the create action is added (since there can be no duplicates in a content-addressed DHT)
               - There can be any number of create actions added to the DHT, all claiming to have created the same entry
-              - The create actions may contradict one another (by claiming different original authors of the entry, for example)
+              - The create actions may contradict one another (for example, by claiming different authors of the entry)
               - It's up to the application code to interpret the full set of discoverable actions, and determine a single, well-believed world state
           </fragment>
 
@@ -367,8 +378,9 @@ fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;Ac
 
             - Records a modification submitted on an entry, downstream of that entry's initial create action
             - An update action must be issued as a child of some other action
-              - The new update action can be the child of either a create action, or of another pre-existing update action
-            - After adding an update, The original entry (as well as all of that entry's valid downstream create and update actions) will still exist in the DHT
+              - Can be the child of either a create action, or of another pre-existing update action
+            - After adding an update, The original entry will still exist in the DHT
+              - And so will all of that entry's downstream create and update actions
             - One create or update action may have any number of child update actions added under it
               - In this way, a set of update actions can form a merkle chain of compatible updates to one entry
               - Furthermore, a set of update actions might branch to form a tree of incompatible update chains
@@ -376,10 +388,18 @@ fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;Ac
             - An update action cannot branch directly from an entry itself
               - This is because, for any given entry, there may be several valid create and update actions all descended from that one entry
               - Attempting to attach an update directly to an entry would require deciding which of the valid action chains you wanted to append the new update action to
-          </fragment>
+            </fragment>
 
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-            <pre><code class="rust" data-noescape>
+          </section>
+  
+          <section>
+            <fragment language="markdown" animate="by-line with-ancestry">
+              ### Entry Actions
+              #### update_entry()
+            </fragment>
+  
+            <fragment animate="by-line with-ancestry balanced separate-comments">
+              <pre><code class="rust" data-noescape>
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -407,11 +427,10 @@ fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
             #### delete_entry()
 
             - Must be scoped to an action, not an entry
-                - It may be ambiguous which of several valid actions pointing to the same entry you intend to delete
             - Deleted entry and action will still exist in the DHT after deleting
-                - We are just marking them as "deleted"
+              - We are just marking them as "deleted"
             - One action may be deleted multiple times
-            - It's up to the application to interpret what "deleting an action" means
+            - It's up to the application to interpret what it "deleting an action" means
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -429,6 +448,14 @@ fn delete_comment(comment_action_hash: ActionHash) -> ExternResult&lt;()&gt; {
 </code></pre>
           </fragment>
         </section>
+
+        <section>
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Retrievals
+            #### Overview
+
+            - Read requests issued to the DHT
+          </fragment>
 
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
