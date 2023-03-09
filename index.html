@@ -256,7 +256,7 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
   let dna_properties = my_dna_info.properties;<span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span> // Properties of the DNA
   let admin_pub_key = AgentPubKey::try_from(dna_properties<span class="fragment fade-in-then-out popover">'dna_properties' is of type 'SerializedBytes', so it can serialize to any rust type that derives 'Serialize' and 'Deserialize'</span>)?; // Decoding the properties
 
-  Ok(hash)
+  Ok(dna_hash)
 }
 </code></pre>
 </fragment>
