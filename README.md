@@ -15,15 +15,7 @@ npm start
 
 To edit the slides, open `index.html` and edit them.
 
-## Publishing
-
-If you are satisfied with the slides, run this to publish them to github pages:
-
-```bash
-npm run gh-pages
-```
-
 ## Relevant documentation
 
 - [Reveal.js](https://revealjs.com/)
-- [reveal.js-nested-fragments](https://www.npmjs.com/package/reveal.js-nested-fragments)
+- [reveal.js-animate-fragments](https://www.npmjs.com/package/reveal.js-animate-fragments)
