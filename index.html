@@ -311,7 +311,7 @@ struct Post {
 #[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span> // Redefines the "EntryTypes" enum but with unit variants
 enum EntryTypes { // Enum with each entry type as a variant
   #[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(name = "comment", visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span>)] // Configure entry behaviour
-  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "post", visibility = "public"
+  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "comment", visibility = "public"
   Post(Post),
 }
 </code></pre>
