@@ -286,7 +286,7 @@ fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
 
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
-            ### Defining An Entry Format
+            ### Defining An Entry Type
 
             - Defines the format for a particular type of entry
             - Can only be done in an integrity zome
@@ -432,7 +432,7 @@ fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
             - Deleted entry and action will still exist in the DHT after deleting
               - We are just marking them as "deleted"
             - One action may be deleted multiple times
-            - It's up to the application to interpret what it "deleting an action" means
+            - It's up to the application to interpret what "deleting an action" means
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
