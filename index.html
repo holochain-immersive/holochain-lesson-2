@@ -205,6 +205,10 @@ fn zome_function_with_broken_custom_input(<span class="fragment strike">input: B
         <section>
           <fragment language="markdown" animate="by-line with-ancestry">
            ### Defining Zome Functions: Capturing Debugging Data
+
+          - You'll need to use the `wasm_error!()` macro to return errors.
+            - You'll need to use `.map_err(|err| wasm_error!(err))` for some HDK function calls.
+          - You can use `error!()` or `warn!()` in your zome functions to log to the terminal console.
           </fragment>
 
           <fragment animate="balanced separate-comments by-line with-ancestry">
@@ -212,8 +216,20 @@ fn zome_function_with_broken_custom_input(<span class="fragment strike">input: B
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn zome_function_e(_: ()) -&gt; ExternResult&lt;()&gt; { 
+fn returning_errors(_: ()) -&gt; ExternResult&lt;()&gt; { 
   Err(wasm_error!(WasmErrorInner::Guest(<span class="fragment fade-in-then-out popover">Captures debugging information (eg. line numbers)</span>String::from("This function returns an error")))) // Captures debug info
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+struct DebuggingInput {
+  some_field_name: String
+}
+#[hdk_extern]
+fn debugging(input: DebuggingInput) -&gt; ExternResult&lt;()&gt; { 
+  error!("This is an error log that functions just like println");
+  warn!("This is a warn log that functions just like println");
+
+  Ok(())
 }
 </code></pre>
 </fragment>
