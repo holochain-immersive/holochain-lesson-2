@@ -148,10 +148,14 @@
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Defining Zome Functions: Exposure
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="balanced separate-comments by-line with-ancestry">
             <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
@@ -170,10 +174,14 @@ fn zome_function_hello_world(_: ()<span class="fragment fade-in-then-out popover
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
            ### Defining Zome Functions: Custom Inputs
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="balanced separate-comments by-line with-ancestry">
             <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
@@ -203,6 +211,8 @@ fn zome_function_with_broken_custom_input(<span class="fragment strike">input: B
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
            ### Defining Zome Functions: Capturing Debugging Data
 
@@ -211,6 +221,8 @@ fn zome_function_with_broken_custom_input(<span class="fragment strike">input: B
           - You can use `error!()` or `warn!()` in your zome functions to log to the terminal console.
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="balanced separate-comments by-line with-ancestry">
             <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
@@ -236,10 +248,14 @@ fn debugging(input: DebuggingInput) -&gt; ExternResult&lt;()&gt; {
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
            ### Retrieving Static Cell Information
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="balanced separate-comments by-line with-ancestry">
           <pre class="fragment fade-in"><code class="rust" data-noescape="">
 use hdk::prelude::*;
@@ -268,7 +284,7 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
   let my_dna_info = dna_info()?;<span class="fragment fade-in-then-out popover">Will return the same value for all agents and zomes in the same DNA</span> // Will return the same value for all agents and zomes in the same DNA
 
   let dna_name: String = my_dna_info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
-  let dna_hash: DnaHash = my_dna_info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, Network Seed and properties </span> // Hash of source code, UID and properties
+  let dna_hash: DnaHash = my_dna_info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, Network Seed and properties </span> // Hash of source code, network seed and properties
   let dna_properties = my_dna_info.properties;<span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span> // Properties of the DNA
   let admin_pub_key = AgentPubKey::try_from(dna_properties<span class="fragment fade-in-then-out popover">'dna_properties' is of type 'SerializedBytes', so it can serialize to any rust type that derives 'Serialize' and 'Deserialize'</span>)?; // Decoding the properties
 
@@ -280,6 +296,8 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
 
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Defining An Entry Type
 
@@ -287,6 +305,8 @@ fn get_dna_hash(_: ()) -&gt; ExternResult&lt;DnaHash&gt; {
             - Can only be done in an integrity zome
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
           <pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
 use hdi::prelude::*;
@@ -306,7 +326,8 @@ struct Post {
 #[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span> // Redefines the "EntryTypes" enum but with unit variants
 enum EntryTypes { // Enum with each entry type as a variant
   #[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(name = "comment", visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span>)] // Configure entry behaviour
-  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>// defaults to name = "post", visibility = "public"
+  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>
+  // defaults to name = "post", visibility = "public"
   Post(Post),
 }
 </code></pre>
@@ -314,6 +335,8 @@ enum EntryTypes { // Enum with each entry type as a variant
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### Overview
@@ -325,6 +348,8 @@ enum EntryTypes { // Enum with each entry type as a variant
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### create_entry()
@@ -340,11 +365,15 @@ enum EntryTypes { // Enum with each entry type as a variant
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### create_entry()
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
             <pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
 use hdk::prelude::*;
@@ -368,6 +397,8 @@ fn create_comment_and_return_action_hash(comment: Comment) -&gt; ExternResult&lt
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### update_entry()
@@ -389,11 +420,15 @@ fn create_comment_and_return_action_hash(comment: Comment) -&gt; ExternResult&lt
           </section>
 
           <section>
+            
+        <!-- prettier-ignore -->
             <fragment language="markdown" animate="by-line with-ancestry">
               ### Entry Actions
               #### update_entry()
             </fragment>
 
+            
+        <!-- prettier-ignore -->
             <fragment animate="by-line with-ancestry balanced separate-comments">
               <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
@@ -417,6 +452,8 @@ fn update_comment(input: UpdateCommentInput) -&gt; ExternResult&lt;ActionHash&gt
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Actions
             #### delete_entry()
@@ -428,6 +465,8 @@ fn update_comment(input: UpdateCommentInput) -&gt; ExternResult&lt;ActionHash&gt
             - It's up to the application to interpret what "deleting an action" means
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
           <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
@@ -445,6 +484,8 @@ fn delete_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;()&gt; 
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Retrievals
             #### Overview
@@ -454,6 +495,8 @@ fn delete_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;()&gt; 
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Retrievals
             #### get()
@@ -462,6 +505,8 @@ fn delete_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;()&gt; 
               - Record is the union of the action and optionally its accompanying entry
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
             <pre>              <code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
@@ -480,6 +525,8 @@ fn get_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;Option&lt;
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Retrievals
             #### get_details()
@@ -490,6 +537,8 @@ fn get_comment(comment_action_hash: ActionHash) -&gt; ExternResult&lt;Option&lt;
               - ...return the action, its associated entry, and all the actions that refer to that action
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
           <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
@@ -520,6 +569,8 @@ fn get_comment_entry_details(comment_entry_hash: EntryHash) -&gt; ExternResult&l
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Links
 
@@ -538,6 +589,8 @@ fn get_comment_entry_details(comment_entry_hash: EntryHash) -&gt; ExternResult&l
               - Only in integrity zomes
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
             <pre><code class="rust" data-noescape="">// zomes/integrity/lib.rs
 use hdi::prelude::*;
@@ -552,11 +605,15 @@ enum LinkTypes { // Enum with each entry type as a variant
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Link Actions
             #### create_link()
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
           <pre><code class="rust" data-noescape="">
 // zomes/coordinator/lib.rs
@@ -583,6 +640,8 @@ fn create_comment(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
         </section>
 
         <section>
+          
+        <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Link Retrievals
             #### get_links()
@@ -591,6 +650,8 @@ fn create_comment(comment: Comment) -&gt; ExternResult&lt;ActionHash&gt; {
               - You can retrieve all the links attached to a given hash as a base
           </fragment>
 
+          
+        <!-- prettier-ignore -->
           <fragment animate="by-line with-ancestry balanced separate-comments">
 
           <pre><code class="rust" data-noescape="">// zomes/coordinator/lib.rs
