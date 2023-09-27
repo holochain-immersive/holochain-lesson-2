@@ -509,8 +509,10 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
             ### Entry Retrievals
             #### get_details()
 
-            - Given an entry hash, return the entry and all the actions that have created, updated or deleted any action pointing to that entry
-            - Given an action hash, return the entry, the action and all the actions that have updated or deleted that action
+            - Given an entry hash...
+              - ...return the entry and all the actions that refer to that entry (recursively)
+            - Given an action hash...
+              - ...return the action, its associated entry, and all the actions that refer to that action
           </fragment>
 
           <fragment animate="by-line with-ancestry balanced separate-comments">
@@ -548,8 +550,11 @@ fn get_comment_entry_details(comment_entry_hash: EntryHash) -> ExternResult&lt;E
 
             - Linking from one hash to another, with some optional metadata
             - Link components:
-              - Base hash: can be public key, entry hash, action hash or
-                external hash (the hash doesn't exist in this DHT)
+              - Base hash - can be:
+                - public key
+                - entry hash
+                - action hash
+                - external hash (doesn't exist in this DHT)
               - Target hash: can be of the same types as the base hash
               - Type: app defined link type
               - Tag: app defined arbitrary metadata
@@ -622,7 +627,7 @@ fn get_all_comments_by_agent(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Reco
   let links: Vec&lt;Link&gt; = get_links(
     author, <span class="fragment fade-in-then-out popover">Base hash: the given agent pub key</span> // Base hash 
     LinkTypes::AuthorToComment, <span class="fragment fade-in-then-out popover">LinkType: one of the variants defined in the integrity zome</span> // Link Type
-    None, <span class="fragment fade-in-then-out popover">"Option&lt;LinkTag&gt;": prefix filter on link tag, if this has some tag starts with the given tag as their prefix will be returned </span> // Filter on link tag prefix
+    None, <span class="fragment fade-in-then-out popover">"Option&lt;LinkTag&gt;": filter result set down to only those links with a matching prefix on their link tag.</span> // Filter on link tag prefix
   )?;
 
   let mut comments: Vec&lt;Record&gt; = vec![];
@@ -639,6 +644,11 @@ fn get_all_comments_by_agent(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Reco
 </code></pre>
           </fragment>
         </section>
+
+        <section>
+          <h1>That's it!</h1>
+        </section>
+
       </div>
     </div>
 
