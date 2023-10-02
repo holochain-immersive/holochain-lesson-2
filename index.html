@@ -507,13 +507,13 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
     GetOptions::default() // Cache control, by default returns cached records
   )?; 
 
-  let comment: Comment = record
+  let _comment: Comment = record
     .entry()
-    .to_app_option()
+    .to_app_option() // Extracts an entry in its rust struct form from a record
     .map_err(|err| wasm_error!(err))?
     .ok_or(wasm_error!(WasmErrorInner::Guest(
         "Could not deserialize record to comment.".into(),
-    )))?; // In case you need to extract an entry in its struct form from a record
+    )))?;
 
   Ok(comment_record)
 }
