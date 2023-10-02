@@ -150,12 +150,8 @@ fn returning_errors(_: ()) -> ExternResult&lt;()&gt; {
   )) 
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-struct DebuggingInput {
-  some_field_name: String
-}
 #[hdk_extern]
-fn debugging(input: DebuggingInput) -> ExternResult&lt;()&gt; { 
+fn debugging(_: ()) -> ExternResult&lt;()&gt; { 
   error!("This is an error log that functions just like println");
   warn!("This is a warn log that functions just like println");
 
@@ -282,7 +278,7 @@ struct Post {
 }
 
 #[hdk_entry_defs] // - Defines all the entries for this zome
-                  // - Must be the only "#[hdk_entry_def]" in the zome
+                  // - Must be the only "#[hdk_entry_defs]" in the zome
                   // - Can only be defined in integrity zomes
 #[unit_enum(UnitEntryTypes)] // Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" 
                              // but with the converted variants to unit variants (no payload)
@@ -292,8 +288,8 @@ enum EntryTypes { // Enum with each entry type as a variant
     visibility = "private" // Entry not published to the DHT, only stored in the source chain
   )] 
   Comment(Comment),
-  // #[entry_def] can be omitted, defaults to the struct name in snake_case and "public"
-  Post(Post), // defaults to name = "post", visibility = "public"
+  // Can be omitted, defaults to the struct name in snake_case and "public"
+  Post(Post),
 }
 </code></pre>
 </fragment>
@@ -348,7 +344,7 @@ use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[hdk_extern]
-fn basic_comment_creation(comment: Comment) -> ExternResult&lt;()&gt; {
+fn create_comment(comment: Comment) -> ExternResult&lt;()&gt; {
   create_entry(EntryTypes::Comment(comment))?; // - "create_entry" comes from hdk::prelude::*; 
                                                // - Input must be an instance of the 
                                                // entry types enumerable
@@ -380,8 +376,8 @@ fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;Ac
             - Records a modification submitted on an entry, downstream of that entry's initial create action
             - An update action must be issued as a child of some other action
               - Can be the child of either a create action, or of another pre-existing update action
-            - After adding an update, The original entry will still exist in the DHT
-              - And so will all of that entry's downstream create and update actions
+            - After adding an update, the original entry will still exist in the DHT
+              - And so will all of that entry's upstream create and update actions
             - One create or update action may have any number of child update actions added under it
               - In this way, a set of update actions can form a merkle chain of compatible updates to one entry
               - Furthermore, a set of update actions might branch to form a tree of incompatible update chains
@@ -412,7 +408,7 @@ use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct UpdateCommentInput {
+struct UpdateCommentInput {
   original_action_hash: ActionHash,
   new_comment: Comment
 }
@@ -421,7 +417,7 @@ pub struct UpdateCommentInput {
 fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
   let action_hash = update_entry(
     input.original_action_hash, // The original action must be a create or an update action
-    input.new_comment // New entry must be of the same entrytype
+    EntryTypes::Comment(input.new_comment) // New entry must be of the same entrytype
   )?;
 
   Ok(action_hash)
