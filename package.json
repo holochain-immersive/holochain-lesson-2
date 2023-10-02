@@ -4,30 +4,20 @@
   "license": "MIT",
   "author": "guillem.cordoba@gmail.com",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "build": "rimraf dist && rollup -c rollup.config.js",
-    "start": "web-dev-server"
+    "build": "rimraf dist && vite build",
+    "start": "vite --open"
   },
   "dependencies": {
-    "reveal.js": "^4.3.1",
-    "reveal.js-animate-fragments": "^0.0.12",
-    "reveal.js-eliminate-empty-lines": "^0.0.6",
-    "reveal.js-nested-fragments": "^0.0.2",
+    "@mythosthesia/reveal-course-preset": "^0.1.5",
+    "reveal.js": "=4.3.1",
     "typed-js": "^0.2.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
-    "@open-wc/building-rollup": "^2.0.1",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^18.1.0",
-    "@rollup/plugin-node-resolve": "^13.0.6",
-    "@web/dev-server": "^0.1.28",
-    "@web/dev-server-rollup": "^0.3.18",
-    "@web/rollup-plugin-html": "^1.10.1",
-    "babel-plugin-template-html-minifier": "^4.1.0",
     "deepmerge": "^4.2.2",
     "rimraf": "^3.0.2",
-    "rollup": "^2.60.0",
-    "rollup-plugin-terser": "^7.0.2"
+    "vite": "^4.4.9"
   }
 }

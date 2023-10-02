@@ -9,131 +9,13 @@
     <meta name="Description" content="Put your description here." />
     <base href="/" />
 
-    <style>
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: sans-serif;
-        background-color: #ededed;
-        --r-main-font-size: 24px;
-        --r-heading-margin: 20px 0 12px 0;
-      }
+    <script type="module">
+      import "reveal.js/dist/reveal.css";
+      import "reveal.js/dist/theme/black.css";
+      import "reveal.js/plugin/highlight/monokai.css";
+      import "@mythosthesia/reveal-course-preset/styles.css";
+    </script>
 
-      .slides {
-        width: 75% !important;
-      }
-
-      .container {
-        top: 0 !important;
-        display: flex !important;
-        flex-direction: row !important;
-      }
-      .column {
-        display: flex;
-        flex-direction: column;
-      }
-      .row {
-        display: flex;
-        flex-direction: row;
-      }
-
-      ul {
-        width: 100%;
-      }
-
-      section {
-        text-align: left;
-      }
-
-      .popover {
-        position: absolute;
-        background-color: #4d4d4d;
-        padding: 1rem 2rem;
-        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
-        border-radius: 10px;
-        width: auto;
-        transform: translate(16px, -15px);
-        max-width: 600px;
-        white-space: break-spaces;
-      }
-      .popover:after {
-        content: "";
-        position: absolute;
-        top: 6px;
-        left: -8px;
-        border-style: solid;
-        border-width: 18px 12px 0;
-        border-color: #4d4d4d transparent;
-        display: block;
-        width: 0;
-        z-index: 1;
-        transform: translate(-50%, 50%) rotate(90deg);
-      }
-
-      .popover .hljs-meta,
-      .popover .hljs-class,
-      .popover .hljs-keyword,
-      .popover .hljs-symbol,
-      .popover .hljs-string,
-      .popover .hljs-title {
-        color: rgb(221, 221, 221) !important;
-        font-weight: normal;
-      }
-
-      
-      .hljs-keyword {
-        color: #817eed !important;
-      }
-
-      .hljs-literal {
-        color: #ff90b8 !important;
-      }
-
-      .reveal pre code {
-        max-height: 800px !important;
-      }
-
-      .dna {
-        background-color: green;
-      }
-      .zome {
-        background-color: blue;
-      }
-      .coordinator-zomes {
-        background-color: lightblue;
-      }
-
-      .dna,
-      .cell,
-      .zome,
-      .coordinator-zomes,
-      .source-chain,
-      .happ-bundle,
-      .box,
-      .dna-bundle,
-      .dht-shard,
-      .conductor,
-      .happ {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px;
-        border-width: 3px;
-        border-color: rgb(209, 209, 209);
-        border-style: solid;
-      }
-    </style>
-    <link rel="stylesheet" href="/node_modules/reveal.js/dist/reveal.css" />
-
-    <link
-      rel="stylesheet"
-      href="/node_modules/reveal.js/dist/theme/black.css"
-    />
-    <link
-      rel="stylesheet"
-      href="/node_modules/reveal.js/plugin/highlight/monokai.css"
-    />
     <title>Holochain Lesson 2</title>
   </head>
 
@@ -144,6 +26,7 @@
           <h1>HDK: basic functions</h1>
         </section>
 
+        <!-- prettier-ignore -->
         <section language="markdown" animate="by-line with-ancestry">
           ### HDK & HDI
 
@@ -158,7 +41,7 @@
             - Docs at https://docs.rs/hdi
         </section>
 
-        <section>
+        <section >
           
         <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
@@ -167,23 +50,32 @@
 
           
         <!-- prettier-ignore -->
-          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <fragment>
             <pre
               class="fragment fade-in"
-            ><code class="rust" data-noescape>
+            ><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+            >
 use hdk::prelude::*;
 
-#[hdk_extern] <span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comes from hdk::prelude::*</li><li class="fragment fade-in-then-semi-out">Exposes a function to be callable</li><li class="fragment fade-in-then-semi-out">Zome function name must be unique in this zome</li></span> // Exposes a function to be callable from the outside
-fn zome_function_hello(name: String<span class="fragment fade-in-then-out popover">Zome functions can only accept one parameter</span>) -> ExternResult&lt;String&gt;<span class="fragment fade-in-then-out popover">Must return an "ExternResult&lt;T&gt;"</span> {
-  Ok(format!("hello {}!", name))
+#[hdk_extern] // - Comes from hdk::prelude::*
+              // - Exposes a function to be callable from the outside
+fn zome_function_hello(name: String) -> ExternResult&lt;String&gt; { // - Zome function name 
+                                                               // must be unique in this zome
+                                                               // - Zome functions can only 
+                                                               // accept one parameter
+
+  Ok(format!("hello {}!", name)) // Must return an "ExternResult" of a typing that implements 
+                                 // "Serialize", "Deserialize" and "Debug"
 }
 
 #[hdk_extern]
-fn zome_function_hello_world(_: ()<span class="fragment fade-in-then-out popover">To indicate disregard for input parameter, we use the Unit type</span>) -> ExternResult&lt;String&gt; { // () denotes no input params
+fn zome_function_hello_world(_: ()) -&gt; ExternResult&lt;String&gt; { // To indicate disregard 
+                                                              // for input parameter, we use
+                                                              // the unit typing "()"
   Ok(format!("hello world!"))
 }
-</code
-            ></pre>
+</code></pre>
           </fragment>
         </section>
 
@@ -196,14 +88,17 @@ fn zome_function_hello_world(_: ()<span class="fragment fade-in-then-out popover
 
           
         <!-- prettier-ignore -->
-          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <fragment>
             <pre
               class="fragment fade-in"
-            ><code class="rust" data-noescape>
+            ><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+             >
 use hdk::prelude::*;
 
 // We can define custom input parameter structs
-#[derive(Serialize, Deserialize, Debug)]<span class="fragment fade-in-then-out popover">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>
+#[derive(Serialize, Deserialize, Debug)] // Input parameters must derive 
+                                         // "Serialize", "Deserialize" and "Debug"
 struct CustomInputStruct {
   name: String
 }
@@ -213,13 +108,16 @@ fn zome_function_with_custom_input(input: CustomInputStruct) -> ExternResult&lt;
   Ok(format!("hello {}!", input.name))
 }
 
-struct BrokenInputStruct {<span class="fragment fade-in-then-out popover">This input struct wont work, because it doesn't derive the right traits</span>
+struct BrokenInputStruct { // This input struct won't work,
+                           // because it doesn't derive the right traits
   name: String
 }
 
 #[hdk_extern]
-fn zome_function_with_broken_custom_input(<span class="fragment strike">input: BrokenInputStruct</span><span class="fragment fade-in-then-out popover">Input parameters must derive "Serialize", "Deserialize" and "Debug"</span>) -> ExternResult&lt;String&gt; {
-  // Err! Doesn't derive "Serialize", "Deserialize" and "Debug"
+fn zome_function_with_broken_custom_input(
+  input: BrokenInputStruct // Error: Input parameters must derive 
+                           // "Serialize", "Deserialize" and "Debug"
+) -> ExternResult&lt;String&gt; { 
   Ok(format!("hello {}!", input.name))
 }
 </code
@@ -240,15 +138,19 @@ fn zome_function_with_broken_custom_input(<span class="fragment strike">input: B
 
           
         <!-- prettier-ignore -->
-          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <fragment >
             <pre
               class="fragment fade-in"
-            ><code class="rust" data-noescape>
+            ><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+            >
 use hdk::prelude::*;
 
 #[hdk_extern]
 fn returning_errors(_: ()) -> ExternResult&lt;()&gt; { 
-  Err(wasm_error!(WasmErrorInner::Guest(<span class="fragment fade-in-then-out popover">Captures debugging information (eg. line numbers)</span>String::from("This function returns an error")))) // Captures debug info
+  Err(wasm_error!( // "wasm_error!" Captures debugging information (eg. line numbers)
+    WasmErrorInner::Guest(String::from("This function returns an error"))
+  )) 
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -270,44 +172,80 @@ fn debugging(input: DebuggingInput) -> ExternResult&lt;()&gt; {
           
         <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
-           ### Retrieving Static Cell Information
+           ### Retrieving Static Cell Information (I)
           </fragment>
 
           
         <!-- prettier-ignore -->
-          <fragment animate="balanced separate-comments by-line with-ancestry">
+          <fragment>
           <pre
             class="fragment fade-in"
-          ><code class="rust" data-noescape>
+          ><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
 use hdk::prelude::*;
 
 #[hdk_extern]
-fn get_my_pub_key(_: ()) -> ExternResult&lt;AgentPubKey&gt;<span class="fragment fade-in-then-out popover">Acts as the "agent ID"</span> {
-  let my_agent_info = agent_info()?;<span class="fragment fade-in-then-out popover">Will return a different value depending on which cell is executing the function</span> // Depends on which cell is executing this function
+fn get_my_pub_key(_: ()) -> ExternResult&lt;AgentPubKey&gt; { // "AgentPubKey" acts as the "agent ID"
+  let my_agent_info = agent_info()?; // Will return a different value depending on 
+                                     // which cell is executing the function
 
-  let my_pub_key: AgentPubKey = my_agent_info.agent_initial_pubkey;<span class="fragment fade-in-then-out popover">"agent_initial_pubkey": In the future the public key of a cell may change </span>
+  let my_pub_key: AgentPubKey = my_agent_info.agent_initial_pubkey; // In the future the  
+                                                                    // public key of a cell 
+                                                                    // may change
 
   Ok(my_pub_key)
 }
             
 #[hdk_extern]
-fn get_zome_name(_: ()) -> ExternResult&lt;ZomeName&gt;<span class="fragment fade-in-then-out popover">A simple struct wrapping a String</span> {
-  let my_zome_info = zome_info()?;<span class="fragment fade-in-then-out popover">Will return a different value depending on which zome this function is defined within, but will return the same for all agents</span> // Depends on which zome is the function defined
+fn get_zome_name(_: ()) -> ExternResult&lt;ZomeName&gt; { // "ZomeName" is a simple Tuple(Struct)
+                                                    // wrapping a String
+  let my_zome_info = zome_info()?; // Will return a different value depending on 
+                                   // which zome this function is defined within,
+                                   // but will return the same for all agents
 
-  let zome_name: ZomeName = my_zome_info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
-  let zome_id: ZomeId = my_zome_info.id;<span class="fragment fade-in-then-out popover">Zome index in the DNA that Holochain uses to identify the zome </span> // Zome index (integer)
+  let zome_name: ZomeName = my_zome_info.name; // Human readable name, 
+                                               // defined in the DNA manifest
+  let zome_id: ZomeId = my_zome_info.id; // Zome index (integer) in the DNA that Holochain 
+                                         // uses to identify the zome 
 
   Ok(zome_name)
 }
 
+</code></pre>
+</fragment>
+</section>
+        <section>
+          
+        <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+           ### Retrieving Static Cell Information (II)
+          </fragment>
+
+          
+        <!-- prettier-ignore -->
+          <fragment>
+          <pre
+            class="fragment fade-in"
+          ><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
+use hdk::prelude::*;
+
 #[hdk_extern]
 fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
-  let my_dna_info = dna_info()?;<span class="fragment fade-in-then-out popover">Will return the same value for all agents and zomes in the same DNA</span> // Will return the same value for all agents and zomes in the same DNA
+  let my_dna_info = dna_info()?; // Will return the same value for all agents 
+                                 // and zomes in the same DNA
 
-  let dna_name: String = my_dna_info.name;<span class="fragment fade-in-then-out popover">Human readable name, defined in the DNA manifest</span> // Human readable name
-  let dna_hash: DnaHash = my_dna_info.hash;<span class="fragment fade-in-then-out popover">Hash of source code, Network Seed and properties </span> // Hash of source code, network seed and properties
-  let dna_properties = my_dna_info.properties;<span class="fragment fade-in-then-out popover">Properties: configuration that the DNA can read to modify it's behaviour </span> // Properties of the DNA
-  let admin_pub_key = AgentPubKey::try_from(dna_properties<span class="fragment fade-in-then-out popover">'dna_properties' is of type 'SerializedBytes', so it can serialize to any rust type that derives 'Serialize' and 'Deserialize'</span>)?; // Decoding the properties
+  let dna_name: String = my_dna_info.name; // Human readable name, defined in the DNA manifest
+  let dna_hash: DnaHash = my_dna_info.hash; // Hash of source code, network seed and properties
+  let dna_properties = my_dna_info.properties; // Properties: configuration that the 
+                                               // DNA can read to modify it's behaviour
+  let pubkey = AgentPubKey::try_from(dna_properties)?; // 'dna_properties' is of type 
+                                                       // 'SerializedBytes', so it can 
+                                                       // serialize to any rust typing 
+                                                       // that derives 'Serialize' and 
+                                                       // 'Deserialize'
 
   Ok(dna_hash)
 }
@@ -328,11 +266,14 @@ fn get_dna_hash(_: ()) -> ExternResult&lt;DnaHash&gt; {
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-          <pre><code class="rust" data-noescape>// zomes/integrity/lib.rs
+          <fragment>
+          <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
+// zomes/integrity/lib.rs
 use hdi::prelude::*;
 
-#[hdk_entry_helper]<span class="fragment popover fade-in-then-out">Adds necessary trait implementations</span> // Adds necessary trait implementations
+#[hdk_entry_helper] // Adds necessary trait implementations
 struct Comment {
   comment: String
 }
@@ -343,13 +284,19 @@ struct Post {
   content: String
 }
 
-#[hdk_entry_defs]<span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the entries for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_entry_def]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span> // Defines all the entries for the zome
-#[unit_enum(UnitEntryTypes)]<span class="fragment popover fade-in-then-out">Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" but with the converted variants to unit variants (no payload)  </span> // Redefines the "EntryTypes" enum but with unit variants
+#[hdk_entry_defs] // - Defines all the entries for this zome
+                  // - Must be the only "#[hdk_entry_def]" in the zome
+                  // - Can only be defined in integrity zomes
+#[unit_enum(UnitEntryTypes)] // Defines a "UnitEntryTypes" enum that's a copy of "EntryTypes" 
+                             // but with the converted variants to unit variants (no payload)
 enum EntryTypes { // Enum with each entry type as a variant
-  #[entry_def<span class="fragment popover fade-in-then-out">Configure entry behaviour</span>(name = "comment", visibility = "private"<span class="fragment fade-in-then-out popover"><li class="fragment fade-in-then-semi-out">Comments won't be published to the DHT</li><li class="fragment fade-in">Only stored privately in the source chain</li></span>)] // Configure entry behaviour
-  Comment(Comment),<span class="fragment fade-in-then-out popover">#[entry_def] can be omitted, but defaults to the struct name in snake_case and visibility "public"</span>
-  // defaults to name = "post", visibility = "public"
-  Post(Post),
+  #[entry_def( // Configures entry behaviour
+    name = "comment", // Must be unique across entry types
+    visibility = "private" // Entry not published to the DHT, only stored in the source chain
+  )] 
+  Comment(Comment),
+  // #[entry_def] can be omitted, defaults to the struct name in snake_case and "public"
+  Post(Post), // defaults to name = "post", visibility = "public"
 }
 </code></pre>
 </fragment>
@@ -395,22 +342,30 @@ enum EntryTypes { // Enum with each entry type as a variant
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-            <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
+          <fragment>
+            <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+            >
+// zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[hdk_extern]
 fn basic_comment_creation(comment: Comment) -> ExternResult&lt;()&gt; {
-  create_entry(<span class="fragment fade-in-then-out popover">Comes from hdk::prelude::*;</span>EntryTypes::Comment(comment)<span class="fragment fade-in-then-out popover">Input must be an instance of the entry types enumerable</span>)?; // Input must be an instance of the entry types enum
+  create_entry(EntryTypes::Comment(comment))?; // - "create_entry" comes from hdk::prelude::*; 
+                                               // - Input must be an instance of the 
+                                               // entry types enumerable
 
   Ok(())
 }
 
 #[hdk_extern]
 fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
-  let action_hash = create_entry(EntryTypes::Comment(comment))?;<span class="fragment fade-in-then-out popover">create_entry() returns the hash of the action that has just been inserted into the agent's source chain</span> // Returns the hash of the resulting action
-
+  let action_hash = create_entry(EntryTypes::Comment(comment))?; // create_entry() returns 
+                                                                 // the hash of the action 
+                                                                 // that has just been inserted
+                                                                 // into the agent's 
+                                                                 // source chain
   Ok(action_hash)
 }
 </code
@@ -451,8 +406,10 @@ fn create_comment_and_return_action_hash(comment: Comment) -> ExternResult&lt;Ac
 
             
         <!-- prettier-ignore -->
-            <fragment animate="by-line with-ancestry balanced separate-comments">
-              <pre><code class="rust" data-noescape>
+            <fragment>
+              <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+              >
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -465,7 +422,10 @@ pub struct UpdateCommentInput {
 
 #[hdk_extern]
 fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
-  let action_hash = update_entry(input.original_action_hash<span class="fragment popover fade-in-then-out">The original comment action can be a create or an update</span>, input.new_comment<span class="fragment popover fade-in-then-out">Entry must be of the same type</span>)?;
+  let action_hash = update_entry(
+    input.original_action_hash, // The original action must be a create or an update action
+    input.new_comment // New entry must be of the same entrytype
+  )?;
 
   Ok(action_hash)
 }
@@ -490,15 +450,20 @@ fn update_comment(input: UpdateCommentInput) -> ExternResult&lt;ActionHash&gt; {
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-          <pre><code class="rust" data-noescape>
+          <fragment>
+          <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[hdk_extern]
 fn delete_comment(comment_action_hash: ActionHash) -> ExternResult&lt;()&gt; {
-  let action_hash =<span class="fragment popover fade-in-then-out">Deleting an entry is also its own action</span> delete_entry(comment_action_hash<span class="fragment popover fade-in-then-out">The original comment action can be a create or an update</span>)?; // Deleted action hash must be a create or an update action
+  let action_hash = delete_entry(comment_action_hash)?; // - Deleting an entry is also its 
+                                                        // own action
+                                                        // - Deleted action hash must be 
+                                                        // a create or an update action
 
   Ok(())
 }
@@ -530,16 +495,21 @@ fn delete_comment(comment_action_hash: ActionHash) -> ExternResult&lt;()&gt; {
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
+          <fragment>
             <pre>
-              <code class="rust" data-noescape>
+              <code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+              >
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
             
 #[hdk_extern]
 fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Record&gt;&gt; {
-  let comment_record: Option&lt;Record&gt; = get(comment_action_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Cache control, by default return cached records</span>)?;
+  let comment_record: Option&lt;Record&gt; = get(
+    comment_action_hash, // Accepts an "ActionHash" or an "EntryHash"
+    GetOptions::default() // Cache control, by default returns cached records
+  )?; 
 
   Ok(comment_record)
 }
@@ -554,39 +524,71 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
         <!-- prettier-ignore -->
           <fragment language="markdown" animate="by-line with-ancestry">
             ### Entry Retrievals
-            #### get_details()
+            #### get_details() (I)
 
-            - Given an entry hash...
-              - ...return the entry and all the actions that refer to that entry (recursively)
-            - Given an action hash...
-              - ...return the action, its associated entry, and all the actions that refer to that action
+            - Given an action hash, return the action, its associated entry, and all the actions that refer to that action
           </fragment>
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-          <pre><code class="rust" data-noescape>
+          <fragment>
+          <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
 
 #[hdk_extern]
 fn get_comment_action_details(comment_action_hash: ActionHash) -> ExternResult&lt;Record&gt; {
-  let record_details: Option&lt;Details&gt; = get_details(comment_action_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Same options as "get()"</span>)?;
+  let record_details: Option&lt;Details&gt; = get_details(
+    comment_action_hash, // Accepts an "ActionHash" or an "EntryHash"
+    GetOptions::default() // Same options as "get()"
+  )?;
 
   match record_details {
     Some(Details::Record(RecordDetails { record, deletes, updates, .. }))  => Ok(record),
-    _ => Err(wasm_error!(WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))))
+    _ => Err(wasm_error!(
+      WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))
+    ))
   }
 }
-  
+</code></pre>
+          </fragment>
+        </section>
+
+        <section>
+          
+        <!-- prettier-ignore -->
+          <fragment language="markdown" animate="by-line with-ancestry">
+            ### Entry Retrievals
+            #### get_details() (II)
+
+            - Given an entry hash, return the entry and all the actions that refer to that entry (recursively)
+          </fragment>
+
+          
+        <!-- prettier-ignore -->
+          <fragment>
+          <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
+// zomes/coordinator/lib.rs
+use hdk::prelude::*;
+use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
+
 #[hdk_extern]
 fn get_comment_entry_details(comment_entry_hash: EntryHash) -> ExternResult&lt;Entry&gt; {
-  let entry_details: Option&lt;Details&gt; = get_details(comment_entry_hash<span class="fragment popover fade-in-then-out">Accepts an "ActionHash" or an "EntryHash"</span>, GetOptions::default()<span class="fragment fade-in-then-out popover">Same options as "get()"</span>)?;
+  let entry_details: Option&lt;Details&gt; = get_details(
+    comment_entry_hash, // Entry Hash
+    GetOptions::default()
+  )?;
   
   match entry_details {
     Some(Details::Entry(EntryDetails { entry, actions, deletes, updates, .. })) => Ok(entry),
-    _ => Err(wasm_error!(WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))))
+    _ => Err(wasm_error!(
+      WasmErrorInner::Guest(String::from("Error trying to get the details of this action"))
+    ))
   }
 }
 </code></pre>
@@ -616,14 +618,19 @@ fn get_comment_entry_details(comment_entry_hash: EntryHash) -> ExternResult&lt;E
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-            <pre><code class="rust" data-noescape>// zomes/integrity/lib.rs
+          <fragment>
+            <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+            >
+// zomes/integrity/lib.rs
 use hdi::prelude::*;
 
 // Defining link types
-#[hdk_link_types]<span class="fragment popover fade-in-then-out"><li class="fragment fade-in-then-semi-out">Defines all the link types for this zome</li><li class="fragment fade-in-then-semi-out">Must be the only "#[hdk_link_types]" in the zome</li><li class="fragment fade-in-then-semi-out">Can only be defined in integrity zomes</li></span> // Defines all the link types for the zome
+#[hdk_link_types] // - Defines all the link types for this zome
+                  // - Must be the only "#[hdk_link_types]" in the zome
+                  // - Can only be defined in integrity zomes
 enum LinkTypes { // Enum with each entry type as a variant
-   AuthorToComment,<span class="fragment fade-in-then-out popover">Must be a Unit variant (without any payload) </span>
+   AuthorToComment, // Must be a Unit variant (without any payload)
 }
 </code></pre>
           </fragment>
@@ -639,23 +646,30 @@ enum LinkTypes { // Enum with each entry type as a variant
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-          <pre><code class="rust" data-noescape>
+          <fragment>
+          <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
-use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome
+use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined 
+                                                      // in our integrity zome
 
 #[hdk_extern]
 fn create_comment(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
-  let comment_action_hash = create_entry(EntryTypes::Comment(comment))?; // Create comment as always
+  let comment_action_hash = create_entry(EntryTypes::Comment(comment))?; // Create comment 
 
-  let my_pub_key: AgentPubKey = agent_info()?.agent_initial_pubkey; <span class="fragment fade-in-then-out popover">The author of the comment is the agent executing this function call</span>
+  let my_pub_key: AgentPubKey = agent_info()?.agent_initial_pubkey; // The author of the 
+                                                                    // comment is the agent 
+                                                                    // executing this 
+                                                                    // function call
 
-  let create_link_action_hash: ActionHash<span class="fragment fade-in-then-out popover">Creating a link is an action in itself</span> = create_link(
-    my_pub_key, <span class="fragment fade-in-then-out popover">Base hash: my agent pub key</span>// Base hash
-    comment_action_hash,  <span class="fragment fade-in-then-out popover">Target hash: the action hash that has just been created</span>// Target hash
-    LinkTypes::AuthorToComment,  <span class="fragment fade-in-then-out popover">LinkType: one of the variants defined in the integrity zome</span>// Link Type
-    ()<span class="fragment fade-in-then-out popover">Link tag, can be any struct that derives 'Serialized' and 'Deserialized'</span> // Link tag
+  let create_link_action_hash: ActionHash = create_link( // Creating a link is 
+                                                         // an action in itself
+    my_pub_key, // Base hash: my agent pub key
+    comment_action_hash, // Target hash: the action hash that has just been created
+    LinkTypes::AuthorToComment, // LinkType: one of the variants defined in the integrity zome
+    () // Link tag, can be any struct that derives 'Serialized' and 'Deserialized'
   )?;
 
   Ok(comment_action_hash)
@@ -677,29 +691,34 @@ fn create_comment(comment: Comment) -> ExternResult&lt;ActionHash&gt; {
 
           
         <!-- prettier-ignore -->
-          <fragment animate="by-line with-ancestry balanced separate-comments">
-
-          <pre><code class="rust" data-noescape>// zomes/coordinator/lib.rs
+          <fragment>
+            <pre><code class="rust" data-noescape data-trim
+            animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
+          >
+// zomes/coordinator/lib.rs
 use hdk::prelude::*;
-use integrity_zome::{LinkTypes, EntryTypes, Comment}; // Import the types defined in our integrity zome
+use integrity_zome::*; // Import the types defined in our integrity zome
 
 #[hdk_extern]
 fn get_all_comments_by_agent(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Record&gt;&gt; {
   let links: Vec&lt;Link&gt; = get_links(
-    author, <span class="fragment fade-in-then-out popover">Base hash: the given agent pub key</span> // Base hash 
-    LinkTypes::AuthorToComment, <span class="fragment fade-in-then-out popover">LinkType: one of the variants defined in the integrity zome</span> // Link Type
-    None, <span class="fragment fade-in-then-out popover">"Option&lt;LinkTag&gt;": filter result set down to only those links with a matching prefix on their link tag.</span> // Filter on link tag prefix
+    author, // Base hash: the given agent pub key
+    LinkTypes::AuthorToComment, // LinkType: one of the variants defined in the integrity zome
+    None, // "Option&lt;LinkTag&gt;": filter result set down to only those links 
+          // with a matching prefix on their link tag
   )?;
-
   let mut comments: Vec&lt;Record&gt; = vec![];
-
   for link in links {
-    let maybe_record = get(ActionHash::from<span class="fragment fade-in-then-out popover">Conversion is important to specify the type of hash we are retrieving for</span>(link.target)<span class="fragment fade-in-then-out popover">Will be the action hash for each of the comments that the agent has created</span>, GetOptions::default())?;
-    if let Some(record) = maybe_record {
+    if let Some(record) = get(
+      ActionHash::from(link.target), // - Conversion is important to specify the 
+                                     // type of hash we are retrieving for
+                                     // - Will be the action hash for each of the 
+                                     // comments that the agent has created
+      GetOptions::default()
+    )? {
       comments.push(record);
     }
   }
-
   Ok(comments)
 }
 </code></pre>
@@ -715,23 +734,10 @@ fn get_all_comments_by_agent(author: AgentPubKey) -> ExternResult&lt;Vec&lt;Reco
 
     <script type="module">
       import Reveal from "reveal.js";
-      import Markdown from "reveal.js/plugin/markdown/markdown.esm.js";
-      import RevealHighlight from "reveal.js/plugin/highlight/highlight.esm.js";
-      import RevealNotes from "reveal.js/plugin/notes/notes.esm.js";
-      import RevealAnimateFragments from "reveal.js-animate-fragments";
-      import RevealEliminateEmptyLines from "reveal.js-eliminate-empty-lines";
+      import { plugins, config } from "@mythosthesia/reveal-course-preset";
 
-      let deck = new Reveal({
-        transition: "none",
-        plugins: [
-          Markdown,
-          RevealHighlight,
-          RevealNotes,
-          RevealEliminateEmptyLines,
-          RevealAnimateFragments
-        ],
-      });
-      deck.initialize();
+      let deck = new Reveal();
+      deck.initialize(config);
     </script>
   </body>
 </html>
