@@ -492,7 +492,7 @@ fn delete_comment(comment_action_hash: ActionHash) -> ExternResult&lt;()&gt; {
             <pre>
               <code class="rust" data-noescape data-trim
             animate="by-line with-ancestry balanced separate-comments trailing-comments-in-popover strike-on-error-in-comment"
-              >
+              ><!-- TODO: what about get with entryhash, which record would you get back? -->
 // zomes/coordinator/lib.rs
 use hdk::prelude::*;
 use integrity_zome::{EntryTypes, Comment}; // Import the types defined in our integrity zome
@@ -502,15 +502,19 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
   let comment_record: Option&lt;Record&gt; = get(
     comment_action_hash, // Accepts an "ActionHash" or an "EntryHash"
     GetOptions::default() // Cache control, by default returns cached records
-  )?; 
+  )?;
 
-  let _comment: Comment = record
-    .entry()
-    .to_app_option() // Extracts an entry in its rust struct form from a record
-    .map_err(|err| wasm_error!(err))?
-    .ok_or(wasm_error!(WasmErrorInner::Guest(
-        "Could not deserialize record to comment.".into(),
-    )))?;
+  /* In case you need to extract the entry struct from the record */
+
+  let maybe_entry: Option&lt;Entry&gt; = record
+    .entry
+    .into_option();
+
+  let entry: Entry =  maybe_entry.ok_or(wasm_error!(
+    WasmErrorInner::Guest(String::from("This record doesn't include any entry"))
+  ))?;
+
+  let _comment = Comment::try_from(entry)?;
 
   Ok(comment_record)
 }
@@ -528,6 +532,7 @@ fn get_comment(comment_action_hash: ActionHash) -> ExternResult&lt;Option&lt;Rec
             #### get_details() (I)
 
             - Given an action hash, return the action, its associated entry, and all the actions that refer to that action
+            <!-- TODO: what do we mean by details? All downstream actions from the given action -->
           </fragment>
 
           
@@ -565,7 +570,7 @@ fn get_comment_action_details(comment_action_hash: ActionHash) -> ExternResult&l
             ### Entry Retrievals
             #### get_details() (II)
 
-            - Given an entry hash, return the entry and all the actions that refer to that entry (recursively)
+            - Given an entry hash, return the entry and all the actions that refer to that entry
           </fragment>
 
           
